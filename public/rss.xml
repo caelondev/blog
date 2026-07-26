@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>blog.caelondev</title>
+    <link>https://blog.caelondev.net</link>
+    <description>devlogs, notes-to-self, and rabbit holes.</description>
+    <language>en</language>
+    <item>
+      <title>00: hello world</title>
+      <link>https://blog.caelondev.net/posts/00-hello-world</link>
+      <guid>https://blog.caelondev.net/posts/00-hello-world</guid>
+      <pubDate>Thu, 01 Jan 1970 00:00:00 GMT</pubDate>
+      <description>first post.</description>
+    </item>
+  </channel>
+</rss>
