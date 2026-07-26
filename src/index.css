@@ -35,3 +35,15 @@
 
   --card-border-radius: 1rem;
 }
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  min-height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
