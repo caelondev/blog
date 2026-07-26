@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+BRANCH="pages"
+BUILD_DIR="dist"
+WORKTREE_DIR=".deploy-worktree"
+
+echo "+-----------------------------------+"
+echo "|  blog.caelondev - deploy script   |"
+echo "+-----------------------------------+"
+echo ""
+
+echo "[1/6] building..."
+npm run build
+
+if [ ! -d "$BUILD_DIR" ]; then
+  echo "x build dir '$BUILD_DIR' not found. did the build fail?"
+  exit 1
+fi
+
+echo "[2/6] adding SPA fallback (404.html)..."
+cp "$BUILD_DIR/index.html" "$BUILD_DIR/404.html"
+
+echo "[3/6] preparing worktree for '$BRANCH'..."
+rm -rf "$WORKTREE_DIR"
+rm -rf "$BUILD_DIR/.git"
+
+if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
+  git worktree add "$WORKTREE_DIR" "$BRANCH"
+else
+  git worktree add --detach "$WORKTREE_DIR"
+  git -C "$WORKTREE_DIR" checkout --orphan "$BRANCH"
+  git -C "$WORKTREE_DIR" rm -rf . >/dev/null 2>&1 || true
+fi
+
+echo "[4/6] syncing build output into worktree..."
+find "$WORKTREE_DIR" -mindepth 1 -maxdepth 1 -not -name ".git" -exec rm -rf {} +
+cp -r "$BUILD_DIR"/. "$WORKTREE_DIR"/
+rm -rf "$WORKTREE_DIR/.git/../.git" 2>/dev/null || true
+
+echo "[5/6] committing..."
+COMMIT_MSG="deploy: $(date +%Y-%m-%d\ %H:%M:%S)"
+git -C "$WORKTREE_DIR" add -A
+git -C "$WORKTREE_DIR" commit -q -m "$COMMIT_MSG" --allow-empty
+
+echo "[6/6] pushing to origin/$BRANCH..."
+git -C "$WORKTREE_DIR" push origin "$BRANCH" -f
+
+echo ""
+echo "[ OK ] deployed."
+echo "  -> $COMMIT_MSG"
+echo "  -> check: https://caelondev.codeberg.page/blog/"
+
+git worktree remove "$WORKTREE_DIR" --force

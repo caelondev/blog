@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import type { PostSummary } from "../../lib/posts.js";
+import type { Post } from "../../lib/posts.js";
 import styles from "./PostList.module.css";
 
 interface PostListProps {
-  posts: PostSummary[];
+  posts: Post[];
 }
 
 export default function PostList({ posts }: PostListProps) {

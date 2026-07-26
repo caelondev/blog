@@ -4,19 +4,21 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "prebuild": "node scripts/build-articles-index.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mdx-js/react": "^3.1.1",
+    "@mdx-js/rollup": "^3.1.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-markdown": "^10.1.0",
     "react-router-dom": "^7.18.1",
     "rehype-pretty-code": "^0.14.5",
+    "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.1",
+    "remark-mdx-frontmatter": "^5.2.0",
     "shiki": "^4.3.1"
   },
   "devDependencies": {

@@ -31,7 +31,30 @@ export default function Layout({ children }: LayoutProps) {
       </header>
       <main className={styles.main}>{children}</main>
       <footer className={styles.footer}>
-        <span>© {new Date().getFullYear()} caelondev</span>
+        <nav className={styles.footerLinks}>
+          <a
+            href="https://caelondev.net"
+            className={styles.footerLink}
+            target="_blank"
+            rel="noreferrer"
+          >
+            caelondev.net
+          </a>
+          <span className={styles.footerDivider}>·</span>
+          <a
+            href={`${import.meta.env.BASE_URL}rss.xml`}
+            className={styles.footerLink}
+          >
+            rss
+          </a>
+          <span className={styles.footerDivider}>·</span>
+          <a href="mailto:me@caelondev.net" className={styles.footerLink}>
+            me@caelondev.net
+          </a>
+        </nav>
+        <span className={styles.footerCopy}>
+          © {new Date().getFullYear()} caelondev
+        </span>
       </footer>
     </div>
   );

@@ -60,3 +60,42 @@
   width: 2.8rem;
   height: 2.8rem;
 }
+
+.footer {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.footerLinks {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+}
+
+.footerLink {
+  color: var(--fg-muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.footerLink:hover {
+  color: var(--primary);
+}
+
+.footerDivider {
+  color: var(--border);
+}
+
+.footerCopy {
+  font-family: var(--font-mono);
+  color: var(--muted);
+  font-size: 0.75rem;
+}

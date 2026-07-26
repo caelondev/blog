@@ -1,24 +1,19 @@
 import { Link, useParams } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypePrettyCode from "rehype-pretty-code";
-import { getPostBySlug, type Post } from "../../lib/posts.js";
+import { MDXProvider } from "@mdx-js/react";
+import { posts, type Post } from "../../lib/posts.js";
 import styles from "./PostPage.module.css";
 
-function CodeBlock({ children, ...props }: React.ComponentProps<"pre">) {
+function CodeBlock(props: React.ComponentProps<"pre">) {
   const preRef = useRef<HTMLPreElement>(null);
   const [copied, setCopied] = useState(false);
   const [lang, setLang] = useState("");
 
   useEffect(() => {
-    const el = preRef.current;
-    if (!el) return;
-    const dataLang =
-      el.getAttribute("data-language") ??
-      el.querySelector("code")?.getAttribute("data-language");
+    const codeEl = preRef.current?.querySelector("code");
+    const dataLang = codeEl?.getAttribute("data-language");
     if (dataLang) setLang(dataLang);
-  }, [children]);
+  }, []);
 
   const handleCopy = async () => {
     const text = preRef.current?.textContent ?? "";
@@ -35,9 +30,7 @@ function CodeBlock({ children, ...props }: React.ComponentProps<"pre">) {
           {copied ? "copied!" : "copy"}
         </button>
       </div>
-      <pre ref={preRef} {...props}>
-        {children}
-      </pre>
+      <pre ref={preRef} {...props} />
     </div>
   );
 }
@@ -77,23 +70,11 @@ function PostMetadata({
 
 export default function PostPage() {
   const { slug } = useParams();
-  const [post, setPost] = useState<Post | null | undefined>(undefined);
+  const post = posts.find((p) => p.slug === slug);
 
-  useEffect(() => {
-    if (!slug) return;
-    let cancelled = false;
-    getPostBySlug(slug).then((p) => {
-      if (!cancelled) setPost(p);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [slug]);
+  if (!post) return <p>not found</p>;
 
-  if (post === undefined) return <p>loading...</p>;
-  if (post === null) return <p>not found</p>;
-
-  const { title, date, tags, excerpt, content } = post;
+  const { Component, title, date, tags, excerpt } = post;
 
   return (
     <div className={styles.postParent}>
@@ -102,13 +83,9 @@ export default function PostPage() {
       </Link>
       <PostMetadata title={title} date={date} tags={tags} excerpt={excerpt} />
       <div className={styles.postContent}>
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          rehypePlugins={[[rehypePrettyCode, { theme: "rose-pine" }]]}
-          components={components}
-        >
-          {content}
-        </ReactMarkdown>
+        <MDXProvider components={components}>
+          <Component />
+        </MDXProvider>
       </div>
     </div>
   );
