@@ -1,5 +1,5 @@
 ---
-title: "00: hello world"
+title: "hello world"
 date: "1970-01-01"
 tags: ["meta"]
 excerpt: "first post."

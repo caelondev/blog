@@ -27,4 +27,10 @@ export const posts: Post[] = Object.entries(modules)
     Component: mod.default,
     ...mod.frontmatter,
   }))
-  .sort((a, b) => b.date.localeCompare(a.date));
+  .sort((a, b) => b.date.localeCompare(a.date))
+  .reverse()
+  .map((post, i) => ({
+    ...post,
+    title: `${String(i).padStart(2, "0")}: ${post.title}`,
+  }))
+  .reverse(); // yeah shut up i'm not optimizing this

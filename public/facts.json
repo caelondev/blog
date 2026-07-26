@@ -29,5 +29,25 @@
   "A segmentation fault doesn't mean you touched 'bad' memory — it means you touched memory the OS never mapped for your process.",
   "Most 'random' number generators in standard libraries are deterministic pseudo-random generators seeded from a time or entropy source.",
   "The first version of Unix time started at January 1, 1970, chosen arbitrarily as a round, recent epoch — not for any technical reason.",
-  "CPU cache lines are typically 64 bytes — false sharing bugs happen when two threads write to different variables that land in the same line."
+  "CPU cache lines are typically 64 bytes — false sharing bugs happen when two threads write to different variables that land in the same line.",
+  "UTF-8 was designed by Ken Thompson and Rob Pike, reportedly sketched out on a diner placemat in New Jersey in 1992.",
+  "Dennis Ritchie created C at Bell Labs in the early 1970s specifically to rewrite UNIX in a portable language.",
+  "Duff's device is a real, legal C idiom that interleaves a switch statement with a loop to unroll it — named after Tom Duff, who wrote it in 1983.",
+  "Two's complement is the dominant integer representation because it lets hardware use the same adder circuit for both addition and subtraction, signed or unsigned.",
+  "The Therac-25 radiation therapy machine caused multiple deaths in the 1980s due to a race condition in its control software.",
+  "The term 'core dump' comes from magnetic core memory, decades after CPUs stopped using actual magnetic cores.",
+  "Whether 'char' is signed or unsigned by default in C is left entirely up to the compiler implementation.",
+  "Modern regex engines support backreferences, which push them past what Stephen Kleene originally defined as 'regular' — true regular languages can't express them.",
+  "TCP guarantees ordered, reliable delivery by retransmitting lost packets; UDP guarantees neither, trading reliability for lower overhead.",
+  "Moore's Law was never a physical law — it was Gordon Moore's 1965 observation and extrapolation about transistor density trends.",
+  "Dijkstra's shortest-path algorithm produces incorrect results if the graph contains negative edge weights.",
+  "The original Apple I shipped as a bare circuit board — no case, keyboard, power supply, or monitor included.",
+  "malloc(0) is technically implementation-defined in C — it may return NULL or a unique non-null pointer that can't be dereferenced.",
+  "Classic Ethernet ran over shared coaxial cable and used CSMA/CD to detect and recover from collisions on the wire.",
+  "Alan Turing's Bombe machine was built specifically to crack the Enigma cipher — it wasn't a general-purpose computer.",
+  "The word 'bit' was coined by statistician John Tukey in 1947 as a contraction of 'binary digit'.",
+  "Ray Tomlinson sent the first network email in 1971 and chose the @ symbol simply because it wasn't used in any username at the time.",
+  "SSDs still expose a block-based interface to mimic hard drives, even though flash memory internally works nothing like spinning disks.",
+  "The 'billion laughs' XML attack exploits entity expansion to balloon a few kilobytes of XML into gigabytes in memory."
 ]
+
