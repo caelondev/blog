@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>blog.caelondev</title>
-    <link>https://blog.caelondev.net</link>
-    <description>devlogs, notes-to-self, and rabbit holes.</description>
-    <language>en</language>
+    <title>caelondev</title>
+    <link>https://caelondev.net</link>
+    <description>Jericho's devlog, weblog, and freedom wall</description>
+    <language>en-us</language>
+
+    <item>
+      <title>02: TailwindCSS sucks</title>
+      <link>https://caelondev.net/articles/tailwindcss-sucks</link>
+      <guid>https://caelondev.net/articles/tailwindcss-sucks</guid>
+      <pubDate>Sun, 26 Jul 2026 00:00:00 GMT</pubDate>
+      <description></description>
+    </item>
+    <item>
+      <title>01: The web has an overengineering problem</title>
+      <link>https://caelondev.net/articles/web-overengineers</link>
+      <guid>https://caelondev.net/articles/web-overengineers</guid>
+      <pubDate>Sun, 26 Jul 2026 00:00:00 GMT</pubDate>
+      <description></description>
+    </item>
     <item>
       <title>00: hello world</title>
-      <link>https://blog.caelondev.net/posts/00-hello-world</link>
-      <guid>https://blog.caelondev.net/posts/00-hello-world</guid>
+      <link>https://caelondev.net/articles/hello-world</link>
+      <guid>https://caelondev.net/articles/hello-world</guid>
       <pubDate>Thu, 01 Jan 1970 00:00:00 GMT</pubDate>
       <description>first post.</description>
     </item>
+
   </channel>
 </rss>
