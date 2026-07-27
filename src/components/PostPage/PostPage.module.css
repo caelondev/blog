@@ -188,12 +188,6 @@
   word-break: break-word;
 }
 
-.postContent pre {
-  white-space: pre-wrap;
-  word-break: break-word;
-  overflow-wrap: break-word;
-}
-
 .postContent input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
@@ -311,4 +305,26 @@
   background: transparent;
   padding: 0;
   border-radius: 0;
+}
+
+.postContent pre {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--bg-card2);
+}
+
+.postContent pre::-webkit-scrollbar {
+  height: 8px;
+}
+
+.postContent pre::-webkit-scrollbar-track {
+  background: var(--bg-card2);
+}
+
+.postContent pre::-webkit-scrollbar-thumb {
+  background: var(--muted);
+  border-radius: 4px;
+}
+
+.postContent pre::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
 }

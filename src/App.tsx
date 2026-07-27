@@ -1,9 +1,10 @@
-import { Routes, Route } from "react-router-dom";
+
 import Layout from "./components/Layout/Layout";
 import Hero from "./components/Hero/Hero";
 import PostPage from "./components/PostPage/PostPage";
 import PostList from "./components/PostList/PostList";
 import { posts } from "./lib/posts.js";
+import { Route, Routes } from "react-router-dom";
 
 function App() {
   return (
