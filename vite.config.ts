@@ -12,6 +12,7 @@ export default defineConfig({
     {
       enforce: "pre",
       ...mdx({
+        mdExtensions: [],
         mdxExtensions: [".mdx", ".md"],
         remarkPlugins: [remarkGfm, remarkFrontmatter, remarkMdxFrontmatter],
         rehypePlugins: [[rehypePrettyCode, { theme: "rose-pine" }]],

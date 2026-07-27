@@ -328,3 +328,11 @@
 .postContent pre::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
+
+.postContent img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--card-border-radius);
+  margin: 1.5rem 0;
+}
