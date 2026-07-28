@@ -3,7 +3,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const SITE_URL = "https://caelondev.net";
+const SITE_URL = "https://blog.caelondev.net";
 const ARTICLES_DIR = "src/articles";
 const OUTPUT = "public/rss.xml";
 
