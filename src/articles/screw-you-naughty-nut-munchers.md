@@ -1,7 +1,7 @@
 ---
 title: "Screw you! naughty nut-munchers!"
 date: "2026-07-26"
-description: "a love letter to bad robots"
+excerpt: "a love letter to bad robots"
 tags: ["security", "robot", "javascript", "honeypot", "rant"]
 ---
 

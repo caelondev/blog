@@ -73,6 +73,16 @@ const posts = fs
   }))
   .reverse();
 
+function categoriesXml(post) {
+  const tags = Array.isArray(post.tags) ? post.tags : [];
+
+  if (!tags.length) return "";
+
+  return tags
+    .map((tag) => `      <category>${escapeXml(tag)}</category>`)
+    .join("\n") + "\n";
+}
+
 const rss = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
@@ -88,7 +98,7 @@ ${posts
       <link>${SITE_URL}/articles/${post.slug}</link>
       <guid>${SITE_URL}/articles/${post.slug}</guid>
       <pubDate>${new Date(post.date).toUTCString()}</pubDate>
-      <description>${escapeXml(post.excerpt)}</description>
+${categoriesXml(post)}      <description>${escapeXml(post.excerpt)}</description>
     </item>`,
   )
   .join("\n")}

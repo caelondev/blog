@@ -11,6 +11,11 @@
       <link>https://caelondev.net/articles/screw-you-naughty-nut-munchers</link>
       <guid>https://caelondev.net/articles/screw-you-naughty-nut-munchers</guid>
       <pubDate>Sun, 26 Jul 2026 00:00:00 GMT</pubDate>
+      <category>security</category>
+      <category>robot</category>
+      <category>javascript</category>
+      <category>honeypot</category>
+      <category>rant</category>
       <description></description>
     </item>
     <item>
@@ -18,6 +23,9 @@
       <link>https://caelondev.net/articles/tailwindcss-sucks</link>
       <guid>https://caelondev.net/articles/tailwindcss-sucks</guid>
       <pubDate>Sun, 26 Jul 2026 00:00:00 GMT</pubDate>
+      <category>css</category>
+      <category>rant</category>
+      <category>frontend</category>
       <description></description>
     </item>
     <item>
@@ -25,6 +33,7 @@
       <link>https://caelondev.net/articles/hello-world</link>
       <guid>https://caelondev.net/articles/hello-world</guid>
       <pubDate>Thu, 01 Jan 1970 00:00:00 GMT</pubDate>
+      <category>meta</category>
       <description>first post.</description>
     </item>
 

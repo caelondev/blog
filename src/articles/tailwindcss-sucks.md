@@ -1,7 +1,7 @@
 ---
 title: "TailwindCSS sucks"
 date: "2026-07-26"
-description: "unpopular opinion but its not that unpopular"
+excerpt: "unpopular opinion but its not that unpopular"
 tags: ["css", "rant", "frontend"]
 ---
 
