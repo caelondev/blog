@@ -129,7 +129,6 @@
   margin: 1.5rem 0;
   font-style: italic;
   color: var(--muted);
-  text-decoration: line-through;
 }
 
 .codeWrapper {
