@@ -2,14 +2,25 @@
 <rss version="2.0">
   <channel>
     <title>caelondev</title>
-    <link>https://caelondev.net</link>
+    <link>https://blog.caelondev.net</link>
     <description>Jericho's devlog, weblog, and freedom wall</description>
     <language>en-us</language>
 
     <item>
+      <title>03: users arent dumb, your ui is just cramped up</title>
+      <link>https://blog.caelondev.net/articles/users-arent-dumb</link>
+      <guid>https://blog.caelondev.net/articles/users-arent-dumb</guid>
+      <pubDate>Thu, 30 Jul 2026 00:00:00 GMT</pubDate>
+      <category>ux</category>
+      <category>design</category>
+      <category>frontend</category>
+      <category>rant</category>
+      <description>a rant about hamburger menus, invisible buttons, and blaming users for bad design</description>
+    </item>
+    <item>
       <title>02: Screw you! naughty nut-munchers!</title>
-      <link>https://caelondev.net/articles/screw-you-naughty-nut-munchers</link>
-      <guid>https://caelondev.net/articles/screw-you-naughty-nut-munchers</guid>
+      <link>https://blog.caelondev.net/articles/screw-you-naughty-nut-munchers</link>
+      <guid>https://blog.caelondev.net/articles/screw-you-naughty-nut-munchers</guid>
       <pubDate>Sun, 26 Jul 2026 00:00:00 GMT</pubDate>
       <category>security</category>
       <category>robot</category>
@@ -20,8 +31,8 @@
     </item>
     <item>
       <title>01: TailwindCSS sucks</title>
-      <link>https://caelondev.net/articles/tailwindcss-sucks</link>
-      <guid>https://caelondev.net/articles/tailwindcss-sucks</guid>
+      <link>https://blog.caelondev.net/articles/tailwindcss-sucks</link>
+      <guid>https://blog.caelondev.net/articles/tailwindcss-sucks</guid>
       <pubDate>Sun, 26 Jul 2026 00:00:00 GMT</pubDate>
       <category>css</category>
       <category>rant</category>
@@ -30,8 +41,8 @@
     </item>
     <item>
       <title>00: hello world</title>
-      <link>https://caelondev.net/articles/hello-world</link>
-      <guid>https://caelondev.net/articles/hello-world</guid>
+      <link>https://blog.caelondev.net/articles/hello-world</link>
+      <guid>https://blog.caelondev.net/articles/hello-world</guid>
       <pubDate>Thu, 01 Jan 1970 00:00:00 GMT</pubDate>
       <category>meta</category>
       <description>first post.</description>
