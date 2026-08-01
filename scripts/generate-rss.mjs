@@ -95,8 +95,8 @@ ${posts
   .map(
     (post) => `    <item>
       <title>${escapeXml(post.title)}</title>
-      <link>${SITE_URL}/articles/${post.slug}</link>
-      <guid>${SITE_URL}/articles/${post.slug}</guid>
+      <link>${SITE_URL}/posts/${post.slug}</link>
+      <guid>${SITE_URL}/posts/${post.slug}</guid>
       <pubDate>${new Date(post.date).toUTCString()}</pubDate>
 ${categoriesXml(post)}      <description>${escapeXml(post.excerpt)}</description>
     </item>`,
