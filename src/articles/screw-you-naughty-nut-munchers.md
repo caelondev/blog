@@ -119,7 +119,7 @@ and that was it. works now.
 
 remember how i said i built this inside the router proxy instead of one single site? that means `/__clankers/` isn't scoped to one domain — it's live under every single one of my domains at once. one honeypot, unlimited victims. you can go poke at it yourself if you want, i'm not gonna paste the link here because that defeats the purpose. _definitely not because i'm lazy or something_. but it's out there. just don't click the link below the warning. ;)
 
-if you're wondering what the page looks like when your banned, here:
+if you're wondering what the page looks like when you're banned, here:
 
 <img src="/assets/honeypot-banned-interface.jpg" alt="honeypot ban interface" />
 
