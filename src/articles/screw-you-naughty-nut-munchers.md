@@ -138,6 +138,12 @@ anyway. go touch grass, clankers.
 
 ### post-scriptum
 
-if you're wondering who the first victim to get banned was — it's not a bad bot, it's this dude 😭
+speaking of victims — wondering who the first one was? it's not even a bad bot, it's just this dude 😭
 
 <img src="/assets/honeypot-victim.jpg" alt="honeypot's first victim" />
+
+fast forward a week and the real catch started rolling in. here's the lineup of bad clankers that actually got banned:
+
+<img src="/assets/banned-bad-bots.jpg" alt="bad clankers" />
+
+see ya ;)
