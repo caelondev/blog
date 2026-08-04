@@ -19,6 +19,14 @@ else
   echo "  -> rss.xml unchanged"
 fi
 
+if ! git diff --quiet -- public/slug.json; then
+  echo "  -> slug.json changed, committing on current branch"
+  git add public/slug.json
+  git commit -q -m "chore: update slug.json"
+else
+  echo "  -> rss.xml unchanged"
+fi
+
 echo "[2/3] resetting '$BRANCH' to current branch (wiping old history)..."
 CURRENT_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 git checkout -B "$BRANCH"
@@ -29,4 +37,3 @@ git push origin "$BRANCH" -f
 
 echo ""
 echo "[ OK ] pushed to '$BRANCH' — Cloudflare will build it."
-
