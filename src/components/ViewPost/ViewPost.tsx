@@ -20,7 +20,7 @@ export function ViewPost({ slug }: ViewPostProps) {
             `https://api.caelondev.net/blog/posts/${slug}/views`,
           );
         } else {
-          const ts = Date.now()
+          const ts = Date.now();
           const sign = await signRequest({ ts });
           res = await axios.post(
             `https://api.caelondev.net/blog/posts/${slug}/views`,
