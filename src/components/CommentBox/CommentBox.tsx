@@ -137,7 +137,6 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
         createdAt: new Date().toISOString(),
       });
 
-      setAuthor("");
       setBody("");
     } catch (err) {
       console.error(err);
