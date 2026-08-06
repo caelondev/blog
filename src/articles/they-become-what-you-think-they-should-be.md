@@ -2,7 +2,7 @@
 title: "they become what you think they should be"
 date: "2026-08-06"
 excerpt: "binaries are kewl"
-tags: ["binary", "low-level", "computer-science", "rant"]
+tags: ["binary", "low-level", "computer-science"]
 ---
 
 okay so i was staring at a single byte the other night for way longer than a normal person should, and somehow that turned into a full blown crisis about what a computer even is. figured i'd just write it out instead of keeping it to myself like a normal person.
@@ -11,9 +11,9 @@ so. binaries. everyone knows the "1s and 0s" thing. cool. fine. but that's not a
 
 we slap `1` and `0` labels on top because saying "5 volts vs 0.2 volts across a transistor gate" out loud in a lecture would get everyone to drop the class immediately. a bit isn't a number. it's a decision. flipped, or not flipped. no in between.
 
-anyway here's the part that actually fucked with my head:
+anyway here's the part that actually f\*cked with my head:
 
-**a bit means literally nothing on its own.**
+> **a bit means literally nothing on its own.**
 
 take `1000011`. seven little switches, some on some off, minding their own business. by itself, that's all it is. it has no identity. no meaning. nothing. the meaning only shows up the second something, a program, a cpu, you, decides to read it a certain way. the bits themselves genuinely do not care.
 
@@ -29,7 +29,7 @@ same seven switches. five different identities. nobody touched the bits. we just
 
 wait ok but why does that even work though. why can we just decide what a bit "is" and have that be true.
 
-turns out it's because nothing in the hardware actually enforces meaning. the cpu doesn't know what a `.png` is. it doesn't know what an `int` is. it doesn't know what _anything_ is. it's just moving switches around and executing instructions on whatever byte pattern shows up next. computers are unbelievably obedient and have zero survival instincts. you hand it garbage and tell it "this is an instruction," and it will absolutely try to execute your fucking garbage, no hesitation, no second guessing, right up until everything explodes.
+turns out it's because nothing in the hardware actually enforces meaning. the cpu doesn't know what a `.png` is. it doesn't know what an `int` is. it doesn't know what _anything_ is. it's just moving switches around and executing instructions on whatever byte pattern shows up next. computers are unbelievably obedient and have zero survival instincts. you hand it garbage and tell it "this is an instruction," and it will absolutely try to execute your f\*cking garbage, no hesitation, no second guessing, right up until everything explodes.
 
 this is also why file formats exist. a `.png`, a `.zip`, an `.exe`, all of it is just streams of these switches with no self awareness. the only reason your os knows to open one in an image viewer and the other in winrar is that somewhere, someone agreed on a rule: "if the first few bytes look like this, treat everything after as that." magic numbers. header signatures. basically vibes, except the vibes are load bearing and if you mess with them your file just refuses to open and you get to enjoy an error dialog for the rest of your night.
 
@@ -72,10 +72,10 @@ const dangling: *u32 = &y;
 // dangling.* is now anyone's guess
 ```
 
-dereference a garbage address, one that isn't pointing at anything your program actually owns anymore, and the cpu will happily go read whatever's sitting there. it has no concept of "valid pointer" vs "random leftover number that used to mean something." it just does what it's told, and BOOM, segfault, or worse, no segfault at all and you just get quietly handed garbage data that looks plausible enough to ruin your afternoon. the storage device couldn't give less of a shit either, it's just holding bytes, it has zero opinion about your lifetime bugs.
+dereference a garbage address, one that isn't pointing at anything your program actually owns anymore, and the cpu will happily go read whatever's sitting there. it has no concept of "valid pointer" vs "random leftover number that used to mean something." it just does what it's told, and BOOM, segfault, or worse, no segfault at all and you just get quietly handed garbage data that looks plausible enough to ruin your afternoon. the storage device couldn't give less of a sh\*t either, it's just holding bytes, it has zero opinion about your lifetime bugs.
 
 so yeah. pointers, addresses, all of it, same rule as before. a chunk of bits with zero opinions about what it's supposed to be, sitting there until your program walks up and decides "you're an address now." it's `1000011` all over again wearing a fancier hat.
 
-anyway. that's basically the whole shit. bits don't have identities, pointers aren't magical, and computers are just extremely obedient idiots doing exactly what we tell them regardless of whether what we told them makes any sense at all.
+anyway. that's basically the whole sh\*t. bits don't have identities, pointers aren't magical, and computers are just extremely obedient idiots doing exactly what we tell them regardless of whether what we told them makes any sense at all.
 
 go hug a transistor or something.
