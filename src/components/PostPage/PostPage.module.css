@@ -230,6 +230,8 @@
   border: 1px solid var(--border);
   padding: 0.6rem 1rem;
   text-align: left;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .postContent th {
