@@ -3,6 +3,16 @@ import { useState, useRef, useEffect } from "react";
 import { MDXProvider } from "@mdx-js/react";
 import { posts, type Post } from "../../lib/posts.js";
 import styles from "./PostPage.module.css";
+import { ViewPost } from "../ViewPost/ViewPost.js";
+import axios from "axios";
+import { Comments } from "../Comments/Comments.js";
+import { Comment } from "../Comment/Comment.js";
+
+interface CommentResponse {
+  author: string;
+  body: string;
+  createdAt: string;
+}
 
 function CodeBlock(props: React.ComponentProps<"pre">) {
   const preRef = useRef<HTMLPreElement>(null);
@@ -47,11 +57,13 @@ function PostMetadata({
   date,
   tags,
   excerpt,
-}: Pick<Post, "title" | "date" | "tags" | "excerpt">) {
+  slug,
+}: Pick<Post, "title" | "date" | "tags" | "excerpt" | "slug">) {
   return (
     <div className={styles.postMeta}>
       <h1 className={styles.postTitle}>{title}</h1>
       <div className={styles.metaRow}>
+        <ViewPost slug={slug} />
         <time className={styles.metaDate}>{date}</time>
         {tags.length > 0 && (
           <span className={styles.metaTags}>
@@ -68,11 +80,35 @@ function PostMetadata({
   );
 }
 
-export default function PostPage() {
+export function PostPage() {
   const { slug } = useParams();
   const post = posts.find((p) => p.slug === slug);
 
-  if (!post) return <p>not found</p>;
+  const [comments, setComments] = useState<CommentResponse[]>([]);
+  const [isError, setIsError] = useState(false);
+
+  useEffect(() => {
+    async function fetchComments() {
+      try {
+        const { data } = await axios.get(
+          `https://api.caelondev.net/blog/posts/${slug}/comments`,
+        );
+
+        setComments(data);
+      } catch (err) {
+        setIsError(true);
+        console.error(err);
+      }
+    }
+
+    if (slug) {
+      fetchComments();
+    }
+  }, [slug]);
+
+  if (!post) {
+    return <p>not found</p>;
+  }
 
   const { Component, title, date, tags, excerpt } = post;
 
@@ -81,12 +117,41 @@ export default function PostPage() {
       <Link to="/" className={styles.backLink}>
         &#9664; back to posts
       </Link>
-      <PostMetadata title={title} date={date} tags={tags} excerpt={excerpt} />
+
+      <PostMetadata
+        title={title}
+        date={date}
+        tags={tags}
+        excerpt={excerpt}
+        slug={slug || ""}
+      />
+
       <div className={styles.postContent}>
         <MDXProvider components={components}>
           <Component />
         </MDXProvider>
       </div>
+
+      <hr />
+      <Comments
+        isError={isError}
+        slug={slug || ""}
+        onCommentPosted={(newComment) =>
+          setComments((prev) => [newComment, ...prev])
+        }
+      >
+        {comments.map((c, i) => (
+          <>
+            <Comment
+              key={i}
+              author={c.author}
+              body={c.body}
+              createdAt={c.createdAt}
+            />
+            {i + 1 < comments.length && <hr className={styles.hr} />}
+          </>
+        ))}
+      </Comments>
     </div>
   );
 }

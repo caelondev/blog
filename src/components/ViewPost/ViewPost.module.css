@@ -1,0 +1,8 @@
+.viewPost {
+  border: 2px solid var(--accent3);
+  color: var(--accent2);
+  padding: 0.2rem 0.65rem;
+  font-family: var(--font-display);
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+}

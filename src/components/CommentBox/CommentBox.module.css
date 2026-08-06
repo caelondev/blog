@@ -1,0 +1,94 @@
+.commentBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
+.authorInput,
+.bodyInput {
+  font-family: var(--font-mono);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  color: var(--fg);
+  padding: 0.6rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.bodyInput {
+  resize: vertical;
+}
+
+.sendButton {
+  align-self: flex-start;
+  font-family: var(--font-mono);
+  background: var(--primary);
+  color: var(--bg);
+  border: none;
+  border-radius: 0.4rem;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+}
+
+.sendButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  color: var(--terminal-fail, #b8412e);
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.verifyBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.15s ease,
+    background 0.15s ease,
+    backdrop-filter 0.15s ease;
+}
+
+.verifyBackdropActive {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.verifyCard {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--card-border-radius);
+  padding: 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  max-width: 340px;
+  width: calc(100% - 3rem);
+  box-sizing: border-box;
+}
+
+.verifyLabel {
+  font-family: var(--font-mono);
+  color: var(--fg-muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.turnstileWidget {
+  min-height: 0;
+}

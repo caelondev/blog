@@ -1,0 +1,10 @@
+.errMsg {
+  text-align: center;
+  color: var(--terminal-fail);
+}
+
+.commentsList {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}

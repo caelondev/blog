@@ -14,12 +14,8 @@ export default function Layout({ children }: LayoutProps) {
           blog<span className={styles.dot}>.</span>
           <span className={styles.logoAccent}>caelondev</span>
         </Link>
-        <a href="https://git.caelondev.net"
-            className={styles.codebergIcon}>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
+        <a href="https://git.caelondev.net" className={styles.codebergIcon}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path
               fill="var(--primary)"
               d="M12 1A11 11 0 0 0 1 12a11 11 0 0 0 1.7 6.4L12 6l9.3 12.4A11 11 0 0 0 23 12 11 11 0 0 0 12 1Z"

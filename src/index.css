@@ -6,11 +6,15 @@
   --bg-card: #181009;
   --bg-card2: #221710;
   --bg-card3: #2c1f15;
+
   --fg: #f0e4d8;
   --fg-muted: #a8836f;
+
   --primary: #e8743f;
   --accent: #c45538;
   --accent2: #e8c4b0;
+  --accent3: #4a3427;
+
   --muted: #8a6a58;
   --border: #2c1f15;
 
@@ -44,6 +48,54 @@ body {
   min-height: 100%;
 }
 
+hr {
+  border: 1px solid var(--border);
+  width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  color: var(--fg);
+  font-family: var(--font-display);
+}
+
+p {
+  font-family: var(--font-mono);
+}
+
 * {
   box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent3);
+  border-radius: 8px;
+  border: 2px solid var(--bg-deep);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--bg-deep);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent3) var(--bg-deep);
 }
