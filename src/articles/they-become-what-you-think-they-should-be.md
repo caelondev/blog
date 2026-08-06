@@ -1,7 +1,7 @@
 ---
 title: "they become what you think they should be"
 date: "2026-08-06"
-excerpt: "binaries aren't 1s and 0s, they're a hostage situation and nobody's told the bits yet"
+excerpt: "binaries are kewl"
 tags: ["binary", "low-level", "computer-science", "rant"]
 ---
 

@@ -7,6 +7,17 @@
     <language>en-us</language>
 
     <item>
+      <title>04: they become what you think they should be</title>
+      <link>https://blog.caelondev.net/posts/they-become-what-you-think-they-should-be</link>
+      <guid>https://blog.caelondev.net/posts/they-become-what-you-think-they-should-be</guid>
+      <pubDate>Thu, 06 Aug 2026 00:00:00 GMT</pubDate>
+      <category>binary</category>
+      <category>low-level</category>
+      <category>computer-science</category>
+      <category>rant</category>
+      <description>binaries aren&apos;t 1s and 0s, they&apos;re a hostage situation and nobody&apos;s told the bits yet</description>
+    </item>
+    <item>
       <title>03: users arent dumb, your UI just sucks</title>
       <link>https://blog.caelondev.net/posts/users-arent-dumb</link>
       <guid>https://blog.caelondev.net/posts/users-arent-dumb</guid>
