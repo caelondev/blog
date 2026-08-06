@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import axios from "axios";
 import styles from "./CommentBox.module.css";
+import { signRequest } from "../../utils/signRequest";
 
 declare global {
   interface Window {
@@ -117,6 +118,7 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
 
     try {
       const token = await getToken();
+      const sign = await signRequest({ author, body });
 
       await axios.post(
         `https://api.caelondev.net/blog/posts/${slug}/comments`,
@@ -124,6 +126,7 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
         {
           headers: {
             "x-turnstile-token": token,
+            "x-trace-id": sign,
           },
         },
       );
