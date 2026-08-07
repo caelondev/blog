@@ -1,4 +1,4 @@
-.postParent {
+.avgpostParent {
   max-width: 720px;
 }
 
@@ -62,7 +62,14 @@
   font-style: italic;
   color: var(--fg-muted);
   margin: 0;
-  padding-bottom: 2rem;
+}
+
+.reactions {
+  margin-top: 10px;
+}
+
+.metaHr {
+  margin: 2rem 0;
   border-bottom: 1px solid var(--border);
 }
 

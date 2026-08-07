@@ -7,6 +7,7 @@ import { ViewPost } from "../ViewPost/ViewPost.js";
 import axios from "axios";
 import { Comments } from "../Comments/Comments.js";
 import { Comment } from "../Comment/Comment.js";
+import ReactionBar from "../ReactionBar/ReactionBar.js";
 
 interface CommentResponse {
   author: string;
@@ -76,6 +77,8 @@ function PostMetadata({
         )}
       </div>
       {excerpt && <p className={styles.excerpt}>{excerpt}</p>}
+      <ReactionBar slug={slug} className={styles.reactions} />
+      <hr className={styles.metaHr} />
     </div>
   );
 }

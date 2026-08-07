@@ -1,0 +1,274 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 0.4rem;
+  max-width: 100%;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  min-width: 0;
+  overflow-x: auto;
+
+  padding: 0 0 0.5rem;
+  scrollbar-width: none;
+}
+
+.row:empty {
+  display: none;
+}
+
+.row::-webkit-scrollbar {
+  display: none;
+}
+
+.pill {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  padding: 0.3rem 0.65rem;
+
+  border-radius: 999px;
+  border: 1px solid var(--border);
+
+  background: var(--bg-card2);
+  color: var(--fg);
+
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1;
+
+  cursor: pointer;
+  user-select: none;
+
+  transition:
+    transform 0.12s ease,
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.pill:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.pill:active {
+  transform: scale(0.93);
+}
+
+.pillActive {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--bg-deep);
+  font-weight: 700;
+}
+
+.emoji {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.count {
+  min-width: 0.9rem;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+
+.plusWrapper {
+  position: relative;
+  flex: 0 0 auto;
+
+  margin: 0;
+  padding: 0;
+}
+
+.plusButton {
+  appearance: none;
+  -webkit-appearance: none;
+
+  margin: 0;
+  padding: 0;
+
+  display: grid;
+  place-items: center;
+
+  width: 2.4rem;
+  height: 2.4rem;
+
+  border-radius: 0.75rem;
+  border: 1px dashed var(--border);
+
+  background: transparent;
+  color: var(--primary);
+
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.12s ease;
+}
+
+.plusButton:hover {
+  border-color: var(--primary);
+}
+
+.plusButton:active {
+  transform: scale(0.92);
+}
+
+.dropdown {
+  position: fixed;
+  z-index: 999;
+
+  transform: translateX(-50%);
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.35rem;
+
+  width: max-content;
+  max-width: min(90vw, 320px);
+
+  padding: 0.75rem;
+
+  border-radius: 0.8rem;
+  border: 1px solid var(--border);
+
+  background: var(--bg-card3);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+
+  animation: dropdownIn 120ms ease;
+}
+
+@keyframes dropdownIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-4px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+.dropdownEmoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2.6rem;
+  height: 2.6rem;
+
+  border-radius: 0.65rem;
+  border: 1px solid transparent;
+
+  background: transparent;
+
+  font-size: 1.45rem;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease,
+    transform 0.12s ease;
+}
+
+.dropdownEmoji:hover {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  transform: scale(1.08);
+}
+
+.dropdownEmoji:active {
+  transform: scale(0.94);
+}
+
+.dropdownEmojiActive {
+  border-color: var(--primary);
+  background: var(--primary);
+}
+
+.pill:focus-visible,
+.plusButton:focus-visible,
+.dropdownEmoji:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.skeletonPill {
+  flex: 0 0 auto;
+  height: 2rem;
+  border-radius: 999px;
+
+  background: linear-gradient(
+    90deg,
+    var(--bg-card2) 25%,
+    var(--border) 50%,
+    var(--bg-card2) 75%
+  );
+
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+.skeletonPlus {
+  flex: 0 0 auto;
+
+  width: 2.4rem;
+  height: 2.4rem;
+
+  border-radius: 0.75rem;
+
+  background: linear-gradient(
+    90deg,
+    var(--bg-card2) 25%,
+    var(--border) 50%,
+    var(--bg-card2) 75%
+  );
+
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill,
+  .plusButton,
+  .dropdownEmoji {
+    transition: none;
+  }
+
+  .dropdown {
+    animation: none;
+  }
+
+  .skeletonPill,
+  .skeletonPlus {
+    animation: none;
+  }
+}
