@@ -70,7 +70,7 @@ function PostMetadata({
           <span className={styles.metaTags}>
             {tags.map((tag) => (
               <span key={tag} className={styles.tag}>
-                #{tag}
+               #{tag}
               </span>
             ))}
           </span>
