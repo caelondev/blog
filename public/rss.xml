@@ -7,6 +7,16 @@
     <language>en-us</language>
 
     <item>
+      <title>05: You ran a program. Now what?</title>
+      <link>https://blog.caelondev.net/posts/you-ran-a-program-now-what</link>
+      <guid>https://blog.caelondev.net/posts/you-ran-a-program-now-what</guid>
+      <pubDate>Thu, 13 Aug 2026 00:00:00 GMT</pubDate>
+      <category>low-level</category>
+      <category>computer science</category>
+      <category>cpu</category>
+      <description>what actually happens between running a binary and your code starting?</description>
+    </item>
+    <item>
       <title>04: they become what you think they should be</title>
       <link>https://blog.caelondev.net/posts/they-become-what-you-think-they-should-be</link>
       <guid>https://blog.caelondev.net/posts/they-become-what-you-think-they-should-be</guid>
