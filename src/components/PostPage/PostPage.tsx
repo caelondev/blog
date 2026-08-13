@@ -70,7 +70,7 @@ function PostMetadata({
           <span className={styles.metaTags}>
             {tags.map((tag) => (
               <span key={tag} className={styles.tag}>
-               #{tag}
+                #{tag}
               </span>
             ))}
           </span>
@@ -97,7 +97,7 @@ export function PostPage() {
           `https://api.caelondev.net/blog/posts/${slug}/comments`,
         );
 
-        setComments(data);
+        setComments(Array.isArray(data) ? data : []);
       } catch (err) {
         setIsError(true);
         console.error(err);
