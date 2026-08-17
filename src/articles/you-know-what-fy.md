@@ -185,14 +185,6 @@ the database saves something.
 but:
 
 ```text
-run()
-```
-
-**RUN WHAT?**
-
-YOUR MOM?
-
-```text
 save()
 ```
 
