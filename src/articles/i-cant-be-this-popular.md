@@ -11,19 +11,19 @@ so i send him the link. like a normal person. proud of my little portfolio.
 
 and he comes back with this
 
-<img src="/images/cf-error-1027.png" alt="the error 1027 screenshot my friend sent me" />
+<img src="/assets/posts/i-cant-be-this-popular/cf-error-1027.jpg" alt="the error 1027 screenshot my friend sent me" />
 
 bro.
 
-"error 1027. this website has been temporarily rate limited. you cannot access this site because the owner has reached their plan limits."
+> "error 1027. this website has been temporarily rate limited. you cannot access this site because the owner has reached their plan limits."
 
 what.
 
 i'm not popular. i'm genuinely not. my portfolio gets like a handful of visitors a day and half of those are me refreshing it to check if everything is still functional. so i did what any rational person would do and sent back a screenshot of the free plan limits like it was evidence in a court case
 
-<img src="/images/cf-free-plan-limit.png" alt="me, in denial" />
+<img src="/assets/posts/i-cant-be-this-popular/cf-free-plan-limit.jpg" alt="me, in denial" />
 
-"ts must be a mistake. there's NO WAY my website hit this much traffic"
+> "ts must be a mistake. there's NO WAY my website hit this much traffic"
 
 lmao. there was a way.
 
@@ -31,15 +31,15 @@ lmao. there was a way.
 
 here's the embarrassing part. i had observability turned off on my cloudflare worker. the one toggle that would've told me what the fuck was going on. so i had zero logs. no timeline. nothing.
 
-i don't know when this shit started. i just know it happened. as far as i can tell my site was dead for like 4 whole days, and the only reason i found out is because some guy on discord was nice enough to click a link.
+i don't know when this shit started. i just know it happened. as far as i can tell my site was dead for like 3 whole days, and the only reason i found out is because some guy on discord was nice enough to click a link.
 
-4. days. my portfolio. the thing that's supposed to make me look employable. just a cloudflare error page, and i was out here writing a compiler.
+3\. days. my portfolio. the thing that's supposed to make me look employable. just a cloudflare error page, and i was out here writing a compiler.
 
 ## the graph
 
 so i opened the analytics and... wait.
 
-<img src="/images/cf-requests-graph.png" alt="the request graph, vertical at 8 AM" />
+<img src="/assets/posts/i-cant-be-this-popular/cf-requests-graph.jpg" alt="the request graph, vertical at 8 AM" />
 
 every day, at 8 AM sharp, the graph goes straight up. like a cliff. 148.5k requests in that window, climbing at ~24k an hour, then it just drops off.
 
@@ -51,7 +51,7 @@ and humans don't do that. no human wakes up at exactly midnight UTC and refreshe
 
 so i enabled observability, hit live, and within seconds:
 
-<img src="/images/cf-observability-logs.png" alt="worker logs full of requests for repos that aren't mine" />
+<img src="/assets/posts/i-cant-be-this-popular/cf-observability-logs.jpg" alt="worker logs full of requests for repos that aren't mine" />
 
 > git.caelondev.net/Codeberg-Infrastructure/forgejo/pulls/35
 
@@ -63,7 +63,7 @@ bro. those aren't my repos. i don't even know what a mailygo is. why is somebody
 
 ## the culprit was my own dumbass code
 
-my `git` subdomain wasn't a redirect back then. it was a full proxy. i have a worker called router-proxy that routes subdomains, and the git route looked like this:
+my `git` subdomain wasn't a redirect back then. it was a full proxy. i have a worker called [router-proxy](https://git.caelondev.net/repos/router-proxy) that routes subdomains, and the git route looked like this:
 
 ```js
 register({
@@ -107,7 +107,7 @@ the worker still has to run to decide to redirect. and the quota counts invocati
 
 ## the actual fix
 
-the thing i didn't know is that cloudflare's WAF runs before the worker. so if a request gets blocked or challenged at the edge, my worker never even wakes up, and it never counts against the 100k.
+the thing i didn't know is that cloudflare's WAF runs before the worker. so if a request gets blocked at the edge, my worker never even wakes up, and it never counts against the 100k.
 
 so i made a custom rule:
 
@@ -115,13 +115,15 @@ so i made a custom rule:
 (http.host eq "git.caelondev.net" and http.request.uri.path ne "/" and not starts_with(http.request.uri.path, "/repos"))
 ```
 
-translation: if it's on the git subdomain and it's not the homepage and it's not one of my `/repos` paths, challenge it. real people only ever hit my stuff, so real people never see the challenge. dumb scrapers can't solve it, so their requests die at the edge and the worker stays asleep.
+translation: if it's on the git subdomain and it's not the homepage and it's not one of my `/repos` paths, block it. real people only ever hit my stuff, so real people never see the block page. the bots just eat a 403, their requests die at the edge, and the worker stays asleep.
 
-then i tested it. opened the pull request url from the logs and got challenged. opened `/` and it loaded like nothing happened.
+and no, block isn't a ban. every request gets judged on its own, so a bot can keep knocking all day and every knock just gets a 403. it only matters that the knock never reaches my code.
 
-<img src="/images/cf-waf-rule.png" alt="the anti-git crawlers rule" />
+then i tested it. opened the pull request url from the logs and got the cloudflare block page. opened `/` and it loaded like nothing happened.
 
-14 challenges in the first minute. i genuinely felt like a god.
+<img src="/assets/posts/i-cant-be-this-popular/cf-waf-rule.jpg" alt="the anti-git crawlers rule" />
+
+1.09k requests caught in the first 5 minutes. i genuinely felt like a cybersecurity expert.
 
 ## what i learned
 
