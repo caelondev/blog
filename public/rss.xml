@@ -7,6 +7,18 @@
     <language>en-us</language>
 
     <item>
+      <title>08: I can&apos;t be THIS popular</title>
+      <link>https://blog.caelondev.net/posts/i-cant-be-this-popular</link>
+      <guid>https://blog.caelondev.net/posts/i-cant-be-this-popular</guid>
+      <pubDate>Wed, 14 Oct 2026 00:00:00 GMT</pubDate>
+      <category>cloudflare</category>
+      <category>workers</category>
+      <category>debugging</category>
+      <category>crawlers</category>
+      <category>rant</category>
+      <description>a crawler ate my entire cloudflare quota and i hosted it a free buffet without knowing</description>
+    </item>
+    <item>
       <title>07: I&apos;d Rather Be a Detective Than a Fortune Teller</title>
       <link>https://blog.caelondev.net/posts/id-rather-be-a-detective-than-a-fortune-teller</link>
       <guid>https://blog.caelondev.net/posts/id-rather-be-a-detective-than-a-fortune-teller</guid>
