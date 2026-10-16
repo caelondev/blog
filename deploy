@@ -36,7 +36,7 @@ git checkout -B "$BRANCH"
 git checkout "$CURRENT_BRANCH"
 
 echo "[4/4] pushing..."
-git push origin "$BRANCH" -f
+git push origin -f "$BRANCH"
 
 echo ""
 echo "[ OK ] pushed to '$BRANCH' — Cloudflare will build it."

@@ -49,7 +49,7 @@ and humans don't do that. no human wakes up at exactly midnight UTC and refreshe
 
 ## turning on the lights
 
-so i enabled observability, hit live, and within seconds:
+so i enabled observability, waited for hours, and went back:
 
 <img src="/assets/posts/i-cant-be-this-popular/cf-observability-logs.jpg" alt="worker logs full of requests for repos that aren't mine" />
 
