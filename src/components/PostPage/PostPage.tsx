@@ -51,6 +51,26 @@ const components = {
     <blockquote className={styles.quote} {...props} />
   ),
   pre: CodeBlock,
+  a: ({ href, children, ...props }: React.ComponentProps<"a">) => {
+    if (href?.startsWith("#")) {
+      return (
+        <a
+          href={href}
+          {...props}
+          onClick={(e) => {
+            e.preventDefault();
+            document
+              .getElementById(decodeURIComponent(href.slice(1)))
+              ?.scrollIntoView({ behavior: "smooth" });
+            history.replaceState(null, "", href);
+          }}
+        >
+          {children}
+        </a>
+      );
+    }
+    return <a href={href} {...props}>{children}</a>;
+  },
 };
 
 function PostMetadata({

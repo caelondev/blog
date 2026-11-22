@@ -5,6 +5,7 @@ import mdx from "@mdx-js/rollup";
 import remarkGfm from "remark-gfm";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
+import rehypeSlug from "rehype-slug";
 import rehypePrettyCode from "rehype-pretty-code";
 import { createHighlighter } from "shiki";
 
@@ -22,12 +23,13 @@ export default defineConfig({
         mdxExtensions: [".mdx", ".md"],
         remarkPlugins: [remarkGfm, remarkFrontmatter, remarkMdxFrontmatter],
         rehypePlugins: [
+          rehypeSlug,
           [
             rehypePrettyCode,
             {
               theme: "rose-pine",
               getHighlighter: (options: any) =>
-                createHighlighter({ ...options, langs: [iglot] }),
+                createHighlighter({ ...options, langs: [iglot] })
             },
           ],
         ],
