@@ -7,6 +7,17 @@
     <language>en-us</language>
 
     <item>
+      <title>09: Intro to the Iglot Programming Language</title>
+      <link>https://blog.caelondev.net/posts/intro-to-iglot-programming-language</link>
+      <guid>https://blog.caelondev.net/posts/intro-to-iglot-programming-language</guid>
+      <pubDate>Sun, 22 Nov 2026 00:00:00 GMT</pubDate>
+      <category>iglot</category>
+      <category>programming-languages</category>
+      <category>compilers</category>
+      <category>tutorial</category>
+      <description>i couldn&apos;t find a type safe, fast scripting language that wasn&apos;t a mess, so i got lazy and made my own. here&apos;s a tour of it</description>
+    </item>
+    <item>
       <title>08: I can&apos;t be THIS popular</title>
       <link>https://blog.caelondev.net/posts/i-cant-be-this-popular</link>
       <guid>https://blog.caelondev.net/posts/i-cant-be-this-popular</guid>
