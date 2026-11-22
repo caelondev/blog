@@ -26,7 +26,7 @@ export default defineConfig({
             rehypePrettyCode,
             {
               theme: "rose-pine",
-              getHighlighter: (options) =>
+              getHighlighter: (options: any) =>
                 createHighlighter({ ...options, langs: [iglot] }),
             },
           ],
