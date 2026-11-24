@@ -133,9 +133,11 @@ so a function that takes two `int`s and returns an `int` has the type `fn (int, 
 two ways to declare a variable. they only differ in whether you spell out the type:
 
 ```iglot
-x :: int = 10;   -- explicit type
-x ::= 10;        -- inferred type
-x = 20;          -- reassign
+x :: int = 10;        -- explicit type
+x :: const int = 10;  -- constant variable
+x :: fin int = 10;    -- final variable
+x ::= 10;             -- inferred type
+x = 20;               -- reassign
 ```
 
 read `::` as "is of type". so `x :: int = 10` is "x, of type int, equals 10". `::=` leaves the type out and lets the compiler work it out from the value. once the variable exists, plain `=` reassigns it.
