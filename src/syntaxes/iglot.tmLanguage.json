@@ -1,9 +1,12 @@
+
 {
   "name": "iglot",
   "scopeName": "source.iglot",
   "patterns": [
     { "include": "#comment" },
     { "include": "#string" },
+    { "include": "#module-decl" },
+    { "include": "#import-decl" },
     { "include": "#function-decl" },
     { "include": "#struct-decl" },
     { "include": "#keyword-other" },
@@ -11,6 +14,7 @@
     { "include": "#builtin-call" },
     { "include": "#declared-name" },
     { "include": "#assign-infer" },
+    { "include": "#function-type" },
     { "include": "#annotation" },
     { "include": "#number" },
     { "include": "#constant" },
@@ -35,8 +39,9 @@
 
     "keyword-other": {
       "name": "keyword.other.iglot",
-      "match": "\\b(fn|and|or)\\b"
+      "match": "\\b(fn|and|or|module|import)\\b"
     },
+
     "keyword-special": {
       "name": "keyword.control.special.iglot",
       "match": "\\b(return|struct|const|fin|break|if|else|loop|switch)\\b"
@@ -45,11 +50,27 @@
     "type-tokens": {
       "patterns": [
         { "include": "#comment" },
-        { "name": "keyword.control.special.iglot", "match": "\\b(const|fin)\\b" },
-        { "name": "support.type.primitive.iglot", "match": "\\b(int|wideint|float|double|bool|string|null|void)\\b" },
-        { "name": "entity.name.type.iglot", "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b" },
-        { "name": "punctuation.iglot", "match": "\\?" },
-        { "name": "punctuation.bracket.iglot", "match": "\\[|\\]" },
+        { "include": "#function-type" },
+        {
+          "name": "keyword.control.special.iglot",
+          "match": "\\b(const|fin)\\b"
+        },
+        {
+          "name": "support.type.primitive.iglot",
+          "match": "\\b(int|wideint|float|double|bool|string|null|void)\\b"
+        },
+        {
+          "name": "entity.name.type.iglot",
+          "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b"
+        },
+        {
+          "name": "punctuation.iglot",
+          "match": "\\?"
+        },
+        {
+          "name": "punctuation.bracket.iglot",
+          "match": "\\[|\\]"
+        },
         { "include": "#number" }
       ]
     },
@@ -64,9 +85,28 @@
       "end": "(?<!:):(?!:)",
       "patterns": [
         { "include": "#comment" },
-        { "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b(?=\\s*::)" },
+        {
+          "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b(?=\\s*::)"
+        },
         { "name": "punctuation.iglot", "match": "::|," },
         { "name": "punctuation.bracket.iglot", "match": "\\)" },
+        { "include": "#type-tokens" }
+      ]
+    },
+
+    "function-type": {
+      "begin": "\\b(fn)\\b\\s*(\\()",
+      "beginCaptures": {
+        "1": { "name": "keyword.other.iglot" },
+        "2": { "name": "punctuation.bracket.iglot" }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": { "name": "punctuation.bracket.iglot" }
+      },
+      "patterns": [
+        { "include": "#comment" },
+        { "name": "punctuation.iglot", "match": "," },
         { "include": "#type-tokens" }
       ]
     },
@@ -88,7 +128,9 @@
         {
           "begin": "([A-Za-z_][A-Za-z0-9_]*)\\s*(::)",
           "beginCaptures": {
-            "1": { "name": "entity.name.type.property.iglot markup.italic.iglot" },
+            "1": {
+              "name": "entity.name.type.property.iglot markup.italic.iglot"
+            },
             "2": { "name": "punctuation.iglot" }
           },
           "end": "(?=[,}])",
@@ -96,6 +138,26 @@
         },
         { "name": "punctuation.iglot", "match": "," }
       ]
+    },
+
+    "module-decl": {
+      "match": "\\b(module)\\b\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*(;)",
+      "captures": {
+        "1": { "name": "keyword.other.iglot" },
+        "2": { "name": "entity.name.namespace.iglot" },
+        "3": { "name": "punctuation.terminator.statement.iglot" }
+      }
+    },
+
+    "import-decl": {
+      "match": "\\b(import)\\b\\s+(?:([A-Za-z_][A-Za-z0-9_]*)\\s*(::)\\s*)?([A-Za-z_][A-Za-z0-9_]*)\\s*(;)",
+      "captures": {
+        "1": { "name": "keyword.other.iglot" },
+        "2": { "name": "entity.name.namespace.iglot" },
+        "3": { "name": "punctuation.iglot" },
+        "4": { "name": "entity.name.namespace.iglot" },
+        "5": { "name": "punctuation.terminator.statement.iglot" }
+      }
     },
 
     "builtin-call": {
@@ -127,15 +189,27 @@
 
     "number": {
       "patterns": [
-        { "name": "constant.numeric.float.iglot", "match": "\\b[0-9]+\\.[0-9]+\\b" },
-        { "name": "constant.numeric.integer.iglot", "match": "\\b[0-9]+\\b" }
+        {
+          "name": "constant.numeric.float.iglot",
+          "match": "\\b[0-9]+\\.[0-9]+\\b"
+        },
+        {
+          "name": "constant.numeric.integer.iglot",
+          "match": "\\b[0-9]+\\b"
+        }
       ]
     },
 
     "constant": {
       "patterns": [
-        { "name": "constant.language.boolean.iglot", "match": "\\b(true|false)\\b" },
-        { "name": "constant.language.null.iglot", "match": "\\bnull\\b" }
+        {
+          "name": "constant.language.boolean.iglot",
+          "match": "\\b(true|false)\\b"
+        },
+        {
+          "name": "constant.language.null.iglot",
+          "match": "\\bnull\\b"
+        }
       ]
     },
 
@@ -149,7 +223,10 @@
 
     "member": {
       "patterns": [
-        { "name": "punctuation.bracket.iglot", "match": "\\.\\[" },
+        {
+          "name": "punctuation.bracket.iglot",
+          "match": "\\.\\["
+        },
         {
           "match": "(\\.)(\\?)",
           "captures": {
@@ -158,10 +235,12 @@
           }
         },
         {
-          "match": "(\\.)([A-Za-z_][A-Za-z0-9_]*)",
+          "match": "(\\.)([A-Za-z_][A-Za-z0-9_]* )",
           "captures": {
             "1": { "name": "punctuation.iglot" },
-            "2": { "name": "entity.name.type.property.iglot markup.italic.iglot" }
+            "2": {
+              "name": "entity.name.type.property.iglot markup.italic.iglot"
+            }
           }
         }
       ]
@@ -174,18 +253,37 @@
 
     "operator": {
       "patterns": [
-        { "name": "punctuation.iglot", "match": "==|!=|>=|<=|=>" },
-        { "name": "keyword.operator.assignment.iglot", "match": "=" },
-        { "name": "punctuation.iglot", "match": "[+\\-*/<>]" }
+        {
+          "name": "punctuation.iglot",
+          "match": "==|!=|>=|<=|=>"
+        },
+        {
+          "name": "keyword.operator.assignment.iglot",
+          "match": "="
+        },
+        {
+          "name": "punctuation.iglot",
+          "match": "[+\\-*/<>]"
+        }
       ]
     },
 
     "punctuation": {
       "patterns": [
-        { "name": "punctuation.terminator.statement.iglot", "match": ";" },
-        { "name": "punctuation.bracket.iglot", "match": "[{}()\\[\\]]" },
-        { "name": "punctuation.iglot", "match": "::|[:,.?#!]" }
+        {
+          "name": "punctuation.terminator.statement.iglot",
+          "match": ";"
+        },
+        {
+          "name": "punctuation.bracket.iglot",
+          "match": "[{}()\\[\\]]"
+        },
+        {
+          "name": "punctuation.iglot",
+          "match": "::|[:,.?#!]"
+        }
       ]
     }
   }
 }
+

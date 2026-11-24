@@ -1,6 +1,6 @@
 ---
 title: "Intro to the Iglot Programming Language"
-date: "2026-11-22"
+date: "2026-11-24"
 excerpt: "i couldn't find a type safe, fast scripting language that wasn't a mess, so i got lazy and made my own. here's a tour of it"
 tags: ["iglot", "programming-languages", "compilers", "tutorial"]
 ---
@@ -30,17 +30,22 @@ i'll explain why it exists first, then we'll get to the code.
    - [declaring](#declaring)
    - [returning](#returning)
    - [calling](#calling)
-9. [arrays](#arrays)
-   - [bare braces](#bare-braces)
-10. [structs](#structs)
+9. [modules and imports](#modules-and-imports)
+   - [the module header](#the-module-header)
+   - [importing](#importing)
+   - [aliases](#aliases)
+   - [module rules](#module-rules)
+10. [arrays](#arrays)
+    - [bare braces](#bare-braces)
+11. [structs](#structs)
     - [declaring](#declaring-1)
     - [creating](#creating)
     - [reading and writing members](#reading-and-writing-members)
-11. [nullables](#nullables)
-12. [built-ins](#built-ins)
-13. [reading compiler errors](#reading-compiler-errors)
-14. [putting it together](#putting-it-together)
-15. [where to go from here](#where-to-go-from-here)
+12. [nullables](#nullables)
+13. [built-ins](#built-ins)
+14. [reading compiler errors](#reading-compiler-errors)
+15. [putting it together](#putting-it-together)
+16. [where to go from here](#where-to-go-from-here)
 
 ## why does this exist
 
@@ -52,19 +57,23 @@ i tried js and python. they're fine, but on their own they aren't enough. typesc
 
 and since i was too lazy to learn another language, i made one myself. lmao.
 
-so that's iglot. small, typed, and hopefully readable. i wrote it in zig, and the source is [on my git](https://git.caelondev.net/repos/iglot). the tour documentation lives in the same repo at `docs/tour.md`. you don't need to know it already. there are a few quirks i'll point out as we go.
+so that's iglot. small, typed, and hopefully readable. i wrote it in zig, and the source is [on codeberg](https://git.caelondev.net/repos/iglot). the tour documentation lives in the same repo at `docs/tour.md`. you don't need to know it already. there are a few quirks i'll point out as we go.
 
 ## hello, world
 
-every program starts at `main`:
+every program starts at `main`. save this as `main.iglot`:
 
 ```iglot
+module main;
+
 fn main() void: {
   println#({ "Hello, World!" });
 }
 ```
 
-three things in those three lines are worth slowing down for.
+four things in those few lines are worth slowing down for.
+
+**every file starts with `module`.** that first line says "this file is a module called `main`", and the name has to match the filename. there's a whole section on modules later. for now just know it always goes first.
 
 **blocks start with a colon.** functions, `if`, `loop` and `struct` all follow the same shape: the header, a `:`, then a `{ ... }` body. you'll see it everywhere.
 
@@ -256,7 +265,87 @@ calling one looks like you'd expect:
 add(1, 2);
 ```
 
-note the difference from built-ins. your own functions use plain parentheses, and built-ins carry the `#`.
+note the difference from built-ins. your own functions use plain parentheses, and built-ins carry the `#`. and if the function lives in another file, you call it through that file's module name. that's coming up next.
+
+## modules and imports
+
+so far everything has been one file, but real programs don't stay that way. so iglot has modules. every file is a module, and every module has its own scope, so two files can both have a function called `helper` and nothing breaks.
+
+### the module header
+
+every file says what it is on its first line:
+
+```iglot
+module math;
+```
+
+a few rules for it:
+
+- it comes before everything else. comments above it are fine.
+- it's required in every file.
+- the name has to match the filename without the extension. `math.iglot` has to say `module math;`, otherwise you get a name mismatch error.
+- files end in `.iglot`.
+
+### importing
+
+`import` goes right after the header, before any declarations. say we have a `math.iglot`:
+
+```iglot
+-- math.iglot
+module math;
+
+fn add(a :: int, b :: int) int: {
+  return a + b;
+}
+```
+
+and a `main.iglot` next to it that uses it:
+
+```iglot
+-- main.iglot
+module main;
+
+import math;
+
+fn main() void: {
+  println#({ math.add(1, 2) });   -- 3
+}
+```
+
+`import math;` binds the name `math`, and you reach things inside it with a dot: `math.add`. you never write a bare `add`, so an import can't collide with your own names.
+
+imported functions are just values, so they work anywhere a function does:
+
+```iglot
+sum :: fn (int, int) int = math.add;
+println#({ sum(50, 100) });   -- 150
+```
+
+### aliases
+
+if the module's name is long, or clashes with something, give the import a different name with `::`. same operator you use for declarations:
+
+```iglot
+import m :: math;
+
+fn main() void: {
+  println#({ m.add(1, 2) });
+}
+```
+
+the alias goes on the left and the module on the right, so read it as "`m` is `math`". once you alias something, only the alias exists. after `import m :: math;` the name `math` isn't bound anymore.
+
+### module rules
+
+- **one file is one module.** imports are looked up by name next to the importing file, so `import math;` loads `math.iglot` from the same directory.
+- **each module is loaded once.** if two files import the same module, they share it. its top-level variables are initialized once, before the importing module's own.
+- **everything at the top level is importable** (functions, variables and structs). visibility modifiers are planned.
+- **no import cycles.** if `a` imports `b` and `b` imports `a`, the compiler tells you and shows the chain.
+- **a module is a namespace, not a value.** `x ::= math;` is an error. always use it as `math.something`.
+- **missing names are errors.** `math.nope` tells you the module has no such member, and importing a file that doesn't exist tells you the module can't be found.
+- **two imports can't bind the same name.** alias one of them.
+- **built-ins need no import.** `println#` and friends belong to the compiler, not to any module.
+- **only functions and variables are reachable through a module for now.** using another module's struct as a type (`math.Vec`) isn't supported yet.
 
 ## arrays
 
@@ -389,9 +478,25 @@ you'll see a few types in error messages that you can't write yourself:
 
 ## putting it together
 
-a small program using most of what we covered: a struct, a nullable, a function, a loop, and a built-in.
+a small program using most of what we covered: two modules, a struct, a nullable, a function, a loop, and a built-in. first, a tiny helper module:
 
 ```iglot
+-- math.iglot
+module math;
+
+fn add(a :: int, b :: int) int: {
+  return a + b;
+}
+```
+
+and the main file, next to it:
+
+```iglot
+-- main.iglot
+module main;
+
+import math;
+
 struct Person: {
   name :: string,
   age :: int,
@@ -417,14 +522,17 @@ fn main() void: {
   loop: {
     if count == 2: break;
     greet(null);
-    count = count + 1;
+    count = math.add(count, 1);
   }
 }
 ```
 
+run `main.iglot` and the compiler loads `math.iglot` for you, because `main` imports it.
+
 ## where to go from here
 
-that's the tour so far: six primitives, arrays, structs, nullables, a loop, and a handful of built-ins. it's all still a work in progress, so expect it to grow. every piece uses the colon-then-braces shape from the very first function.
+that's the tour so far: six primitives, arrays, structs, nullables, a loop, modules, and a handful of built-ins. it's all still a work in progress, so expect it to grow. every piece uses the colon-then-braces shape from the very first function.
 
 go write something. if the compiler yells at you, it's probably right.
 
+> (P.S. i'll try to keep updating this post everytime theres a new iglot update :3)
