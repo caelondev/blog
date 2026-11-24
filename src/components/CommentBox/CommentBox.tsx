@@ -35,14 +35,19 @@ interface CommentBoxProps {
   onCommentPosted?: (comment: NewComment) => void;
 }
 
+interface SessionUser {
+  login: string;
+  avatar: string;
+}
+
 const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+const API = "https://api.caelondev.net/blog";
 
 export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
-  const AUTHOR_KEY = "blog-comment-author";
+  const DRAFT_KEY = `blog-comment-draft:${slug}`;
 
-  const [author, setAuthor] = useState(
-    () => localStorage.getItem(AUTHOR_KEY) || "",
-  );
+  const [user, setUser] = useState<SessionUser | null>(null);
+  const [authReady, setAuthReady] = useState(false);
   const [body, setBody] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,17 +57,30 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
   const widgetIdRef = useRef<string | null>(null);
   const tokenResolverRef = useRef<((token: string) => void) | null>(null);
 
+  // who's logged in?
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      localStorage.setItem(AUTHOR_KEY, author);
-    }, 300);
-    return () => clearTimeout(timeout);
-  }, [author]);
+    axios
+      .get(`${API}/auth/me`, { withCredentials: true })
+      .then((r) => setUser(r.data.user ?? null))
+      .catch(() => setUser(null))
+      .finally(() => setAuthReady(true));
+  }, []);
+
+  // restore the draft we stashed before the github redirect
+  useEffect(() => {
+    try {
+      const draft = sessionStorage.getItem(DRAFT_KEY);
+      if (draft) {
+        setBody(draft);
+        sessionStorage.removeItem(DRAFT_KEY);
+      }
+    } catch { }
+  }, [DRAFT_KEY]);
 
   useEffect(() => {
     if (!TURNSTILE_SITE_KEY) {
       console.error(
-        "VITE_TURNSTILE_SITE_KEY is missing — check your .env file and restart the dev server",
+        "VITE_TURNSTILE_SITE_KEY is missing, check your .env file and restart the dev server",
       );
       return;
     }
@@ -106,10 +124,32 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
     });
   }, []);
 
+  function loginWithGithub() {
+    try {
+      if (body.trim()) sessionStorage.setItem(DRAFT_KEY, body);
+    } catch { }
+    window.location.href = `${API}/auth/github?redirect=${encodeURIComponent(
+      window.location.href,
+    )}`;
+  }
+
+  async function logout() {
+    try {
+      await axios.post(`${API}/auth/logout`, null, { withCredentials: true });
+    } catch (err) {
+      console.error(err);
+    }
+    setUser(null);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!author.trim() || !body.trim()) {
-      setError("fill in both fields");
+    if (!user) {
+      setError("login with github to comment");
+      return;
+    }
+    if (!body.trim()) {
+      setError("say something first");
       return;
     }
 
@@ -118,12 +158,14 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
 
     try {
       const token = await getToken();
-      const sign = await signRequest({ author, body });
+      // the server ignores author and uses the session, this only feeds the signature
+      const sign = await signRequest({ author: user.login, body });
 
       await axios.post(
-        `https://api.caelondev.net/blog/posts/${slug}/comments`,
-        { author, body },
+        `${API}/posts/${slug}/comments`,
+        { author: user.login, body },
         {
+          withCredentials: true,
           headers: {
             "x-turnstile-token": token,
             "x-trace-id": sign,
@@ -132,7 +174,7 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
       );
 
       onCommentPosted?.({
-        author,
+        author: user.login,
         body,
         createdAt: new Date().toISOString(),
       });
@@ -140,7 +182,14 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
       setBody("");
     } catch (err) {
       console.error(err);
-      setError("failed to post comment, try again");
+      const serverMsg = axios.isAxiosError(err)
+        ? err.response?.data?.error
+        : null;
+      setError(
+        typeof serverMsg === "string" && serverMsg.length < 100
+          ? serverMsg
+          : "failed to post comment, try again",
+      );
     } finally {
       setIsSubmitting(false);
       if (widgetIdRef.current) {
@@ -151,14 +200,17 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
 
   return (
     <form className={styles.commentBox} onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="username"
-        className={styles.authorInput}
-        value={author}
-        onChange={(e) => setAuthor(e.target.value)}
-        maxLength={32}
-      />
+      {user && (
+        <div className={styles.loggedIn}>
+          <img src={user.avatar} alt="" className={styles.avatar} />
+          <span>
+            commenting as <b>@{user.login}</b>
+          </span>
+          <button type="button" className={styles.linkButton} onClick={logout}>
+            logout
+          </button>
+        </div>
+      )}
       <textarea
         placeholder="say something..."
         className={styles.bodyInput}
@@ -168,18 +220,28 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
         maxLength={1000}
       />
       {error && <p className={styles.error}>{error}</p>}
-      <button
-        type="submit"
-        className={styles.sendButton}
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? "sending..." : "send"}
-      </button>
+      <div className={styles.actions}>
+        <button
+          type="submit"
+          className={styles.sendButton}
+          disabled={isSubmitting || !user}
+        >
+          {isSubmitting ? "sending..." : "send"}
+        </button>
+        {authReady && !user && (
+          <button
+            type="button"
+            className={`${styles.sendButton} ${styles.githubButton}`}
+            onClick={loginWithGithub}
+          >
+            login with github
+          </button>
+        )}
+      </div>
 
       <div
-        className={`${styles.verifyBackdrop} ${
-          showVerify ? styles.verifyBackdropActive : ""
-        }`}
+        className={`${styles.verifyBackdrop} ${showVerify ? styles.verifyBackdropActive : ""
+          }`}
       >
         <div className={styles.verifyCard}>
           <p className={styles.verifyLabel}>verifying...</p>
