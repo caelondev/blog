@@ -5,7 +5,54 @@
   margin-top: 1.5rem;
 }
 
-.authorInput,
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.actions > :only-child {
+  margin-left: auto;
+}
+
+.loggedIn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--fg-muted);
+}
+
+.avatar {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.username {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.linkButton {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
 .bodyInput {
   font-family: var(--font-mono);
   background: var(--bg-card);
@@ -14,14 +61,10 @@
   color: var(--fg);
   padding: 0.6rem 0.8rem;
   font-size: 0.9rem;
-}
-
-.bodyInput {
   resize: vertical;
 }
 
 .sendButton {
-  align-self: flex-start;
   font-family: var(--font-mono);
   background: var(--primary);
   color: var(--bg);
@@ -29,11 +72,18 @@
   border-radius: 0.4rem;
   padding: 0.5rem 1.2rem;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .sendButton:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.githubButton {
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--border);
 }
 
 .error {
@@ -72,7 +122,7 @@
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--card-border-radius);
-  padding: 1.5rem 1.5rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -57,7 +57,6 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
   const widgetIdRef = useRef<string | null>(null);
   const tokenResolverRef = useRef<((token: string) => void) | null>(null);
 
-  // who's logged in?
   useEffect(() => {
     axios
       .get(`${API}/auth/me`, { withCredentials: true })
@@ -66,7 +65,6 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
       .finally(() => setAuthReady(true));
   }, []);
 
-  // restore the draft we stashed before the github redirect
   useEffect(() => {
     try {
       const draft = sessionStorage.getItem(DRAFT_KEY);
@@ -200,17 +198,6 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
 
   return (
     <form className={styles.commentBox} onSubmit={handleSubmit}>
-      {user && (
-        <div className={styles.loggedIn}>
-          <img src={user.avatar} alt="" className={styles.avatar} />
-          <span>
-            commenting as <b>@{user.login}</b>
-          </span>
-          <button type="button" className={styles.linkButton} onClick={logout}>
-            logout
-          </button>
-        </div>
-      )}
       <textarea
         placeholder="say something..."
         className={styles.bodyInput}
@@ -220,7 +207,22 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
         maxLength={1000}
       />
       {error && <p className={styles.error}>{error}</p>}
+
       <div className={styles.actions}>
+        {user && (
+          <div className={styles.loggedIn}>
+            <img src={user.avatar} alt="" className={styles.avatar} />
+            <span className={styles.username}>@{user.login}</span>
+            <button
+              type="button"
+              className={styles.linkButton}
+              onClick={logout}
+            >
+              logout
+            </button>
+          </div>
+        )}
+
         <button
           type="submit"
           className={styles.sendButton}
@@ -228,6 +230,7 @@ export function CommentBox({ slug, onCommentPosted }: CommentBoxProps) {
         >
           {isSubmitting ? "sending..." : "send"}
         </button>
+
         {authReady && !user && (
           <button
             type="button"
