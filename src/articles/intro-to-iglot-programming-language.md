@@ -26,6 +26,7 @@ i'll explain why it exists first, then we'll get to the code.
 7. [control flow](#control-flow)
    - [if / else](#if--else)
    - [loops](#loops)
+   - [break and return are expressions](#break-and-return-are-expressions)
 8. [functions](#functions)
    - [declaring](#declaring)
    - [returning](#returning)
@@ -73,7 +74,7 @@ fn main() void: {
 
 four things in those few lines are worth slowing down for.
 
-**every file starts with `module`.** that first line says "this file is a module called `main`", and the name has to match the filename. there's a whole section on modules later. for now just know it always goes first.
+**every file starts with `module`.** that first line says "this file is a module called `main`", and the name has to match the filename. there's a whole section on modules later. for now just know it always goes first. every example from here on includes it, and wraps its code in a function, so you can copy any of them straight into a file.
 
 **blocks start with a colon.** functions, `if`, `loop` and `struct` all follow the same shape: the header, a `:`, then a `{ ... }` body. you'll see it everywhere.
 
@@ -86,7 +87,11 @@ four things in those few lines are worth slowing down for.
 comments start with a double dash and run to the end of the line:
 
 ```iglot
-println#({ ":)" }); -- this is a comment
+module main;
+
+fn main() void: {
+  println#({ ":)" }); -- this is a comment
+}
 ```
 
 ## types
@@ -133,11 +138,15 @@ so a function that takes two `int`s and returns an `int` has the type `fn (int, 
 two ways to declare a variable. they only differ in whether you spell out the type:
 
 ```iglot
-x :: int = 10;        -- explicit type
-x :: const int = 10;  -- constant variable
-x :: fin int = 10;    -- final variable
-x ::= 10;             -- inferred type
-x = 20;               -- reassign
+module main;
+
+fn main() void: {
+  x :: int = 10;        -- explicit type
+  x :: const int = 10;  -- constant variable
+  x :: fin int = 10;    -- final variable
+  x ::= 10;             -- inferred type
+  x = 20;               -- reassign
+}
 ```
 
 read `::` as "is of type". so `x :: int = 10` is "x, of type int, equals 10". `::=` leaves the type out and lets the compiler work it out from the value. once the variable exists, plain `=` reassigns it.
@@ -149,31 +158,43 @@ read `::` as "is of type". so `x :: int = 10` is "x, of type int, equals 10". `:
 literals are what you'd expect:
 
 ```iglot
-10; -100;        -- integers
-10.0; -50.5;     -- floats
-"strings";       -- strings
-true; false;     -- booleans
-null;            -- null
+module main;
+
+fn main() void: {
+  10; -100;        -- integers
+  10.0; -50.5;     -- floats
+  "strings";       -- strings
+  true; false;     -- booleans
+  null;            -- null
+}
 ```
 
 ### arithmetic
 
 ```iglot
-1 + 1;   -- addition
-1 - 1;   -- subtraction
-1 * 1;   -- multiplication
-1 / 1;   -- division
+module main;
+
+fn main() void: {
+  1 + 1;   -- addition
+  1 - 1;   -- subtraction
+  1 * 1;   -- multiplication
+  1 / 1;   -- division
+}
 ```
 
 ### comparison
 
 ```iglot
-1 > 1;    -- greater than
-1 < 1;    -- less than
-1 >= 1;   -- greater than or equal to
-1 <= 1;   -- less than or equal to
-1 == 1;   -- equal to
-1 != 1;   -- not equal to
+module main;
+
+fn main() void: {
+  1 > 1;    -- greater than
+  1 < 1;    -- less than
+  1 >= 1;   -- greater than or equal to
+  1 <= 1;   -- less than or equal to
+  1 == 1;   -- equal to
+  1 != 1;   -- not equal to
+}
 ```
 
 ### logical
@@ -181,9 +202,13 @@ null;            -- null
 logic uses words instead of symbols (except `!`):
 
 ```iglot
-!false           -- NOT
-true and true    -- AND
-true or false    -- OR
+module main;
+
+fn main() void: {
+  !false;           -- NOT
+  true and true;    -- AND
+  true or false;    -- OR
+}
 ```
 
 ## control flow
@@ -191,21 +216,29 @@ true or false    -- OR
 ### if / else
 
 ```iglot
-if x != null: {
-  -- do something
-} else if 10 == 50: {
-  -- do this
-} else: {
-  -- something else
+module main;
+
+fn main() void: {
+  if x != null: {
+    -- do something
+  } else if 10 == 50: {
+    -- do this
+  } else: {
+    -- something else
+  }
 }
 ```
 
-same colon-then-block shape as everything else. if you only need one statement, you can skip the braces:
+same colon-then-block shape as everything else. if you only need one statement, you can skip the braces. any statement is valid after the `:`, not just an expression:
 
 ```iglot
-if cond: x = 10;
-else if cond_2: return false;
-else: return true;
+module main;
+
+fn if_statements() bool: {
+  if cond: x = 10;
+  else if cond_2: return false;
+  else: return true;
+}
 ```
 
 ### loops
@@ -213,20 +246,73 @@ else: return true;
 right now iglot has one loop, and it's called `loop`. it runs forever until you `break`:
 
 ```iglot
-loop: {
-  println#({ "THIS RUNS FOREVERRRRRRR!!!" });
-  break; -- only allowed inside loops
+module main;
+
+fn main() void: {
+  loop: {
+    println#({ "THIS RUNS FOREVERRRRRRR!!!" });
+    break; -- only allowed inside loops
+  }
 }
 ```
 
-`break` is the way out, and it's only allowed inside a loop. more loops are coming, but `loop` is the one that exists today. for now, if you want a counted loop, build one out of a variable, a condition and a `break`:
+`break` is the way out, and it's only allowed inside a loop. a `break` belongs to the innermost loop around it, so in nested loops it only leaves the inner one. more loops are coming, but `loop` is the one that exists today. for now, if you want a counted loop, build one out of a variable, a condition and a `break`:
 
 ```iglot
-count ::= 0;
-loop: {
-  if count == 3: break;
-  println#({ count });
-  count = count + 1;
+module main;
+
+fn main() void: {
+  count ::= 0;
+  loop: {
+    if count == 3: break;
+    println#({ count });
+    count = count + 1;
+  }
+}
+```
+
+### break and return are expressions
+
+`break` and `return` are expressions, not statements. that means they can appear anywhere an expression is allowed, not only on a line of their own:
+
+```iglot
+module main;
+
+fn pointless() ?int: {
+  x ::= return null; -- works, but pointless as-is
+}
+
+fn main() void: {
+  loop: {
+    x ::= break; -- same thing here
+  }
+}
+```
+
+the placement rules still apply:
+
+- `break` is only allowed inside a loop.
+- `return` is only allowed inside a function.
+
+a few things follow from this:
+
+- `break` leaves the loop, so code after it in the same block never runs.
+- `return` leaves the whole function, even from inside a loop. a loop that can only be left by `return` never lets control continue past it, so a function ending in such a loop doesn't need a `return` after it:
+
+```iglot
+module main;
+
+fn first_big(limit :: int) int: {
+  i ::= 0;
+  loop: {
+    if i > limit: return i;
+    i = i + 1;
+  }
+  -- no return needed here, the loop can only be left by `return`
+}
+
+fn main() void: {
+  println#({ first_big(5) });   -- 6
 }
 ```
 
@@ -237,6 +323,8 @@ loop: {
 declare a function with `fn`, a name, typed parameters, a return type, then a colon and a body:
 
 ```iglot
+module main;
+
 fn main() void: {
   -- we're in a function
 }
@@ -250,24 +338,47 @@ parameters use the same `name :: type` form as variables, so there's only one sy
 
 ### returning
 
-`return` is only allowed inside functions, and it's optional in `void` functions:
+`return` is an expression that exits the current function. it's only allowed inside functions, and it's optional in `void` functions:
 
 ```iglot
+module main;
+
 fn main() void: {}
+
 fn add(a :: int, b :: int) int: {
-    return a + b;
+  return a + b;
 }
 ```
+
+see [break and return are expressions](#break-and-return-are-expressions) for where else it can appear.
 
 ### calling
 
 calling one looks like you'd expect:
 
 ```iglot
-add(1, 2);
+module main;
+
+fn add(x :: int, y :: int) int: {
+  return x + y;
+}
+
+fn main() void: {
+  add(1, 2);
+}
 ```
 
-note the difference from built-ins. your own functions use plain parentheses, and built-ins carry the `#`. and if the function lives in another file, you call it through that file's module name. that's coming up next.
+note the difference from built-ins. your own functions use plain parentheses, and built-ins carry the `#`. and if the function lives in another file, you call it through that file's module name. that's coming up next:
+
+```iglot
+module main;
+
+import math;
+
+fn main() void: {
+  math.add(1, 2);
+}
+```
 
 ## modules and imports
 
@@ -319,8 +430,14 @@ fn main() void: {
 imported functions are just values, so they work anywhere a function does:
 
 ```iglot
-sum :: fn (int, int) int = math.add;
-println#({ sum(50, 100) });   -- 150
+module main;
+
+import math;
+
+fn main() void: {
+  sum :: fn (int, int) int = math.add;
+  println#({ sum(50, 100) });   -- 150
+}
 ```
 
 ### aliases
@@ -328,6 +445,8 @@ println#({ sum(50, 100) });   -- 150
 if the module's name is long, or clashes with something, give the import a different name with `::`. same operator you use for declarations:
 
 ```iglot
+module main;
+
 import m :: math;
 
 fn main() void: {
@@ -354,10 +473,14 @@ the alias goes on the left and the module on the right, so read it as "`m` is `m
 arrays have a fixed size and are zero-indexed. `[5]int` means "five ints". you read an element with `.[i]`:
 
 ```iglot
-[3]int{ 1, 2, 3 };               -- array literal
+module main;
 
-x :: [5]int = { 10, 20, 30, 40, 50 };
-println#({ x.[2] });             -- 30
+fn main() void: {
+  a ::= [3]int{ 1, 2, 3 };          -- array literal
+
+  x :: [5]int = { 10, 20, 30, 40, 50 };
+  println#({ x.[2] });              -- 30
+}
 ```
 
 yes, there's a dot before the bracket. it's `.[i]`, not `[i]`.
@@ -367,11 +490,15 @@ yes, there's a dot before the bracket. it's `.[i]`, not `[i]`.
 here's the thing i said i'd come back to. a pair of braces `{ ... }` on its own doesn't mean anything until the compiler knows what you're building. **the declared type decides** whether it becomes an array or a struct:
 
 ```iglot
-array :: [3]int = {
-  1,
-  2,
-  3,
-};
+module main;
+
+fn main() void: {
+  array :: [3]int = {
+    1,
+    2,
+    3,
+  };
+}
 ```
 
 the left side says `[3]int`, so the braces on the right are an array. trailing commas are allowed, so adding an element never means touching the line before it.
@@ -383,10 +510,14 @@ the left side says `[3]int`, so the braces on the right are an array. trailing c
 declare a struct with named, typed members:
 
 ```iglot
+module main;
+
 struct Person: {
   name :: string,
   age :: int,
 }
+
+fn main() void: {}
 ```
 
 ### creating
@@ -394,10 +525,19 @@ struct Person: {
 create one with the same bare braces, this time with `.field = value` entries:
 
 ```iglot
-p :: Person = {
-  .name = "Bob",
-  .age = 30,
-};
+module main;
+
+struct Person: {
+  name :: string,
+  age :: int,
+}
+
+fn main() void: {
+  p :: Person = {
+    .name = "Bob",
+    .age = 30,
+  };
+}
 ```
 
 ### reading and writing members
@@ -405,8 +545,22 @@ p :: Person = {
 `p` is declared as a `Person`, so the compiler knows those braces build a struct. read and write members with a dot:
 
 ```iglot
-println#({ p.name });   -- Bob
-p.name = "Alice";
+module main;
+
+struct Person: {
+  name :: string,
+  age :: int,
+}
+
+fn main() void: {
+  p :: Person = {
+    .name = "Bob",
+    .age = 30,
+  };
+
+  println#({ p.name });   -- Bob
+  p.name = "Alice";
+}
 ```
 
 ## nullables
@@ -414,26 +568,63 @@ p.name = "Alice";
 put `?` in front of a type to allow `null`, and use `.?` to unwrap:
 
 ```iglot
-p :: ?Person = {
-  .name = "Bob",
-  .age = 30,
-};
+module main;
 
-println#({ p.?, p.?.name });   -- unwrap the value, or a member through it
+struct Person: {
+  name :: string,
+  age :: int,
+}
+
+fn main() void: {
+  p :: ?Person = {
+    .name = "Bob",
+    .age = 30,
+  };
+
+  println#({ p.?, p.?.name }); -- unwrap the value, or a member through it
+}
 ```
 
 unwrapping a `null` crashes the program:
 
 ```iglot
-p = null;
-println#({ p.? });             -- Crash!!! (unwrapping null)
+module main;
+
+struct Person: {
+  name :: string,
+  age :: int,
+}
+
+fn main() void: {
+  p :: ?Person = {
+    .name = "Bob",
+    .age = 30,
+  };
+
+  p = null;
+  println#({ p.? }); -- Crash!!! (unwrapping null)
+}
 ```
 
 so check first:
 
 ```iglot
-if p != null: {
-  println#({ p.?.name });
+module main;
+
+struct Person: {
+  name :: string,
+  age :: int,
+}
+
+fn main() void: {
+  p :: ?Person = {
+    .name = "Bob",
+    .age = 30,
+  };
+
+  if p != null: {
+    println#({ p.?.name });
+  }
 }
 ```
 
@@ -444,18 +635,22 @@ that's the whole nullable story. `?` to allow it, `!= null` to check it, `.?` to
 built-ins are called with a `#` after the name. here's the list so far, with each one's type:
 
 ```iglot
-println#({ "Hello, World!" });         -- fn ([UNBOUNDED]any) void
-print#({ "Hello!", "Bye!" });          -- fn ([UNBOUNDED]any) void
-prompt#("Say something! ");            -- fn (string) string
+module main;
 
-parse_to_int#("123");                  -- fn (string) int
-parse_to_wideint#("123");              -- fn (string) wideint
-parse_to_float#("3.14");               -- fn (string) float
-parse_to_double#("3.1415926535");      -- fn (string) double
+fn main() void: {
+  println#({ "Hello, World!" }); -- fn ([UNBOUNDED]any) void
+  print#({ "Hello!", "Bye!" }); -- fn ([UNBOUNDED]any) void
+  prompt#("Say something! "); -- fn (string) string
 
-fetch#("https://example.com");         -- fn (string) ?FetchResult
+  parse_to_int#("123"); -- fn (string) int
+  parse_to_wideint#("123"); -- fn (string) wideint
+  parse_to_float#("3.14"); -- fn (string) float
+  parse_to_double#("3.1415926535"); -- fn (string) double
 
-type_of#(123);                         -- fn (any) string
+  fetch#("https://example.com"); -- fn (string) ?FetchResult
+
+  type_of#(123); -- fn (any) string
+}
 ```
 
 a few things stand out:
