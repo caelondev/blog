@@ -348,3 +348,21 @@
 .hr {
   margin: 1.5rem 0;
 }
+
+.commentsBtn {
+  margin-top: 0.75rem;
+  padding: 0.4rem 0.9rem;
+  background: var(--bg-card2);
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.commentsBtn:hover {
+  background: var(--primary);
+  color: var(--bg);
+}

@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Fragment } from "react";
 import { MDXProvider } from "@mdx-js/react";
 import { posts, type Post } from "../../lib/posts.js";
 import styles from "./PostPage.module.css";
@@ -80,6 +80,12 @@ function PostMetadata({
   excerpt,
   slug,
 }: Pick<Post, "title" | "date" | "tags" | "excerpt" | "slug">) {
+  const jumpToComments = () => {
+    document
+      .getElementById("comments")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <div className={styles.postMeta}>
       <h1 className={styles.postTitle}>{title}</h1>
@@ -97,6 +103,9 @@ function PostMetadata({
         )}
       </div>
       {excerpt && <p className={styles.excerpt}>{excerpt}</p>}
+      <button className={styles.commentsBtn} onClick={jumpToComments}>
+        &#9660; jump to comments
+      </button>
       <ReactionBar slug={slug} className={styles.reactions} />
       <hr className={styles.metaHr} />
     </div>
@@ -156,25 +165,26 @@ export function PostPage() {
       </div>
 
       <hr />
-      <Comments
-        isError={isError}
-        slug={slug || ""}
-        onCommentPosted={(newComment) =>
-          setComments((prev) => [newComment, ...prev])
-        }
-      >
-        {comments.map((c, i) => (
-          <>
-            <Comment
-              key={i}
-              author={c.author}
-              body={c.body}
-              createdAt={c.createdAt}
-            />
-            {i + 1 < comments.length && <hr className={styles.hr} />}
-          </>
-        ))}
-      </Comments>
+      <div id="comments" className={styles.commentsAnchor}>
+        <Comments
+          isError={isError}
+          slug={slug || ""}
+          onCommentPosted={(newComment) =>
+            setComments((prev) => [newComment, ...prev])
+          }
+        >
+          {comments.map((c, i) => (
+            <Fragment key={i}>
+              <Comment
+                author={c.author}
+                body={c.body}
+                createdAt={c.createdAt}
+              />
+              {i + 1 < comments.length && <hr className={styles.hr} />}
+            </Fragment>
+          ))}
+        </Comments>
+      </div>
     </div>
   );
 }
