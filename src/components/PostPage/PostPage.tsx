@@ -79,13 +79,10 @@ function PostMetadata({
   tags,
   excerpt,
   slug,
-}: Pick<Post, "title" | "date" | "tags" | "excerpt" | "slug">) {
-  const jumpToComments = () => {
-    document
-      .getElementById("comments")
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
+  onJumpToComments,
+}: Pick<Post, "title" | "date" | "tags" | "excerpt" | "slug"> & {
+  onJumpToComments: () => void;
+}) {
   return (
     <div className={styles.postMeta}>
       <h1 className={styles.postTitle}>{title}</h1>
@@ -103,7 +100,7 @@ function PostMetadata({
         )}
       </div>
       {excerpt && <p className={styles.excerpt}>{excerpt}</p>}
-      <button className={styles.commentsBtn} onClick={jumpToComments}>
+      <button className={styles.commentsBtn} onClick={onJumpToComments}>
         &#9660; jump to comments
       </button>
       <ReactionBar slug={slug} className={styles.reactions} />
@@ -118,6 +115,13 @@ export function PostPage() {
 
   const [comments, setComments] = useState<CommentResponse[]>([]);
   const [isError, setIsError] = useState(false);
+
+  // a ref points at the element itself, so no heading id in any post can collide with it
+  const commentsRef = useRef<HTMLDivElement>(null);
+
+  const jumpToComments = () => {
+    commentsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   useEffect(() => {
     async function fetchComments() {
@@ -156,6 +160,7 @@ export function PostPage() {
         tags={tags}
         excerpt={excerpt}
         slug={slug || ""}
+        onJumpToComments={jumpToComments}
       />
 
       <div className={styles.postContent}>
@@ -165,7 +170,7 @@ export function PostPage() {
       </div>
 
       <hr />
-      <div id="comments" className={styles.commentsAnchor}>
+      <div ref={commentsRef} className={styles.commentsAnchor}>
         <Comments
           isError={isError}
           slug={slug || ""}
@@ -188,3 +193,4 @@ export function PostPage() {
     </div>
   );
 }
+
