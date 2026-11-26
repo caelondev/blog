@@ -23,6 +23,7 @@ i'll explain why it exists first, then we'll get to the code.
    - [arithmetic](#arithmetic)
    - [comparison](#comparison)
    - [logical](#logical)
+   - [nullable fallback](#nullable-fallback)
 7. [control flow](#control-flow)
    - [if / else](#if--else)
    - [loops](#loops)
@@ -43,6 +44,8 @@ i'll explain why it exists first, then we'll get to the code.
     - [creating](#creating)
     - [reading and writing members](#reading-and-writing-members)
 12. [nullables](#nullables)
+    - [defaulting with or_else](#defaulting-with-or_else)
+    - [bailing out with or_else](#bailing-out-with-or_else)
 13. [built-ins](#built-ins)
 14. [reading compiler errors](#reading-compiler-errors)
 15. [putting it together](#putting-it-together)
@@ -211,6 +214,22 @@ fn main() void: {
 }
 ```
 
+### nullable fallback
+
+`or_else` takes a nullable on the left and gives back its value, or the right side if it's `null`. the result is the plain type, so no `.?` afterwards:
+
+```iglot
+module main;
+
+fn main() void: {
+  x :: ?int = null;
+  y ::= x or_else 5;   -- 5, and y is a plain int
+  println#({ y });
+}
+```
+
+it binds tighter than comparisons and looser than arithmetic, so `a or_else b + 1` means `a or_else (b + 1)`. more on it in [nullables](#nullables).
+
 ## control flow
 
 ### if / else
@@ -315,6 +334,8 @@ fn main() void: {
   println#({ first_big(5) });   -- 6
 }
 ```
+
+because they're expressions, `break` and `return` also work as the right side of [`or_else`](#bailing-out-with-or_else).
 
 ## functions
 
@@ -628,7 +649,47 @@ fn main() void: {
 }
 ```
 
-that's the whole nullable story. `?` to allow it, `!= null` to check it, `.?` to unwrap it.
+checking first works, but it gets tedious. there's a shorter way.
+
+### defaulting with or_else
+
+`left or_else right` is `left` if it isn't `null`, and `right` otherwise. the result has the unwrapped type and can never crash:
+
+```iglot
+module main;
+
+fn main() void: {
+  maybe :: ?int = null;
+  value ::= maybe or_else 42;   -- 42
+  println#({ value });
+}
+```
+
+the right side only runs when the left side is `null`. the left side has to be nullable, and the right side has to match the unwrapped type, so `5 or_else 1` and `?int or_else "hi"` are both errors.
+
+### bailing out with or_else
+
+the right side is also allowed to leave instead of producing a value. since `return` and `break` are expressions, you can bail out right where the `null` shows up:
+
+```iglot
+module main;
+
+fn read_number() int: {
+  n ::= parse_to_int#(prompt#("Enter a number: ")) or_else return -1;
+  return n * 2;
+}
+
+fn main() void: {
+  loop: {
+    n ::= parse_to_int#(prompt#("Number (anything else stops): ")) or_else break;
+    println#({ "Got:", n });
+  }
+}
+```
+
+after the `or_else`, `n` is a plain `int`, because the only way past that line is a non-null value.
+
+that's the nullable story. `?` to allow it, `!= null` or `or_else` to deal with it, `.?` to unwrap it when you're sure.
 
 ## built-ins
 
@@ -642,10 +703,10 @@ fn main() void: {
   print#({ "Hello!", "Bye!" }); -- fn ([UNBOUNDED]any) void
   prompt#("Say something! "); -- fn (string) string
 
-  parse_to_int#("123"); -- fn (string) int
-  parse_to_wideint#("123"); -- fn (string) wideint
-  parse_to_float#("3.14"); -- fn (string) float
-  parse_to_double#("3.1415926535"); -- fn (string) double
+  parse_to_int#("123"); -- fn (string) ?int
+  parse_to_wideint#("123"); -- fn (string) ?wideint
+  parse_to_float#("3.14"); -- fn (string) ?float
+  parse_to_double#("3.1415926535"); -- fn (string) ?double
 
   fetch#("https://example.com"); -- fn (string) ?FetchResult
 
@@ -657,7 +718,7 @@ a few things stand out:
 
 - `println#` and `print#` take any number of values of any type, which is why you hand them a braced group.
 - `prompt#` shows a message and gives back what the user typed, as a `string`.
-- the `parse_to_*` functions turn strings into numbers.
+- the `parse_to_*` functions turn strings into numbers. they return a nullable, so bad input gives `null`. `or_else` is the usual way to handle that.
 - `fetch#` returns a nullable `?FetchResult`, so a failed request is handled with the nullable rules above.
 - `type_of#` gives you a type's name as a `string`.
 
@@ -675,7 +736,7 @@ you'll see a few types in error messages that you can't write yourself:
 
 ## putting it together
 
-a small program using most of what we covered: two modules, a struct, a nullable, a function, a loop, and a built-in. first, a tiny helper module:
+a small program using most of what we covered: two modules, a struct, a nullable, a function, a loop, and a few built-ins. first, a tiny helper module:
 
 ```iglot
 -- math.iglot
@@ -715,16 +776,18 @@ fn main() void: {
 
   greet(bob);
 
+  times ::= parse_to_int#(prompt#("How many empty greetings? ")) or_else 2;
+
   count ::= 0;
   loop: {
-    if count == 2: break;
+    if count == times: break;
     greet(null);
     count = math.add(count, 1);
   }
 }
 ```
 
-run `main.iglot` and the compiler loads `math.iglot` for you, because `main` imports it.
+run `main.iglot` and the compiler loads `math.iglot` for you, because `main` imports it. type something that isn't a number and `or_else` falls back to 2.
 
 ## where to go from here
 
