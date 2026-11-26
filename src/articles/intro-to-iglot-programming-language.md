@@ -1,6 +1,6 @@
 ---
 title: "Intro to the Iglot Programming Language"
-date: "2026-11-24"
+date: "2026-11-26"
 excerpt: "i couldn't find a type safe, fast scripting language that wasn't a mess, so i got lazy and made my own. here's a tour of it"
 tags: ["iglot", "programming-languages", "compilers", "tutorial"]
 ---
