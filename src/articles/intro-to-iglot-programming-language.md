@@ -1,6 +1,6 @@
 ---
 title: "Intro to the Iglot Programming Language"
-date: "2026-11-26"
+date: "2026-11-28"
 excerpt: "i couldn't find a type safe, fast scripting language that wasn't a mess, so i got lazy and made my own. here's a tour of it"
 tags: ["iglot", "programming-languages", "compilers", "tutorial"]
 ---
@@ -35,6 +35,8 @@ i'll explain why it exists first, then we'll get to the code.
 9. [modules and imports](#modules-and-imports)
    - [the module header](#the-module-header)
    - [importing](#importing)
+   - [nested imports](#nested-imports)
+   - [root imports](#root-imports)
    - [aliases](#aliases)
    - [module rules](#module-rules)
 10. [arrays](#arrays)
@@ -461,6 +463,56 @@ fn main() void: {
 }
 ```
 
+### nested imports
+
+modules can live in directories. separate each directory and the file with `/`:
+
+```iglot
+-- tests/main.iglot
+module main;
+
+import utils/math/arithmetic;   -- loads utils/math/arithmetic.iglot
+
+fn main() void: {
+  arithmetic.sum_of(100, 2);
+}
+```
+
+a few things to know:
+
+- the last segment is the file, and every segment before it is a directory.
+- the binding name is the last segment, so you use it as `arithmetic`, not `utils` or `utils/math/arithmetic`.
+- a bare path is looked up from the directory of the file that contains the import.
+- the module name in the header still has to match the last segment, so `arithmetic.iglot` says `module arithmetic;`.
+- there is no `..`. a bare path can only go down, never up. if you need something outside the current directory, that's what root imports are for.
+
+### root imports
+
+prefix a path with `@/` to start from the **root** instead of the current directory. the root is the directory of the entry file, the one you pass to the cli. running `iglot run src/main.iglot` makes `src/` the root, no matter where you run it from:
+
+```iglot
+-- utils/math/arithmetic.iglot
+module arithmetic;
+
+import @/utils/printer;   -- always resolves from the root
+
+fn sum_of(a :: int, b :: int) void: {
+  printer.format("sum:", a + b);
+}
+```
+
+a root import means the same thing from every file, so you can move a file around without breaking it.
+
+using `@/` in a file that already sits in the root is an error, since a bare path there already starts at the root:
+
+```iglot
+-- main.iglot, in the root directory
+module main;
+
+import @/utils/printer;   -- error: redundant "@/" prefix
+import utils/printer;     -- correct
+```
+
 ### aliases
 
 if the module's name is long, or clashes with something, give the import a different name with `::`. same operator you use for declarations:
@@ -475,12 +527,27 @@ fn main() void: {
 }
 ```
 
+aliasing works on paths too:
+
+```iglot
+module main;
+
+import arith :: utils/math/arithmetic;
+import p :: @/utils/printer;
+
+fn main() void: {
+  arith.sum_of(1, 2);
+}
+```
+
 the alias goes on the left and the module on the right, so read it as "`m` is `math`". once you alias something, only the alias exists. after `import m :: math;` the name `math` isn't bound anymore.
+
+aliases are also how you import two modules that share a last segment (`a/util` and `b/util`), because both would otherwise bind `util`.
 
 ### module rules
 
-- **one file is one module.** imports are looked up by name next to the importing file, so `import math;` loads `math.iglot` from the same directory.
-- **each module is loaded once.** if two files import the same module, they share it. its top-level variables are initialized once, before the importing module's own.
+- **one file is one module.** `import math;` loads `math.iglot` from the same directory as the importing file, and `import @/math;` loads it from the root.
+- **each module is loaded once.** if two files import the same module, they share it, even if one writes the path as a bare import and the other uses `@/`. its top-level variables are initialized once, before the importing module's own.
 - **everything at the top level is importable** (functions, variables and structs). visibility modifiers are planned.
 - **no import cycles.** if `a` imports `b` and `b` imports `a`, the compiler tells you and shows the chain.
 - **a module is a namespace, not a value.** `x ::= math;` is an error. always use it as `math.something`.
@@ -747,7 +814,7 @@ fn add(a :: int, b :: int) int: {
 }
 ```
 
-and the main file, next to it:
+and the main file, which uses it:
 
 ```iglot
 -- main.iglot
@@ -755,44 +822,53 @@ module main;
 
 import math;
 
-struct Person: {
+struct Counter: {
   name :: string,
-  age :: int,
+  total :: int,
 }
 
-fn greet(p :: ?Person) void: {
-  if p != null: {
-    println#({ "Hello,", p.?.name });
-  } else: {
-    println#({ "Nobody here." });
-  }
+fn describe(c :: Counter) void: {
+  println#({ c.name, "total:", c.total });
 }
 
 fn main() void: {
-  bob :: ?Person = {
-    .name = "Bob",
-    .age = 30,
+  c :: Counter = {
+    .name = "session",
+    .total = 0,
   };
 
-  greet(bob);
-
-  times ::= parse_to_int#(prompt#("How many empty greetings? ")) or_else 2;
-
-  count ::= 0;
   loop: {
-    if count == times: break;
-    greet(null);
-    count = math.add(count, 1);
+    n ::= parse_to_int#(prompt#("add a number (anything else stops): ")) or_else break;
+    c.total = math.add(c.total, n);
+    describe(c);
   }
+
+  println#({ "final:", c.total });
 }
 ```
 
-run `main.iglot` and the compiler loads `math.iglot` for you, because `main` imports it. type something that isn't a number and `or_else` falls back to 2.
+here's what's going on, top to bottom:
+
+- `import math;` pulls in the helper, and `math.add` is how we reach it.
+- `Counter` is a struct, and the bare braces in `main` become one because `c` is declared as a `Counter`.
+- `prompt#` asks for input, and `parse_to_int#` turns it into a `?int`.
+- `or_else break` is the nullable story in one line. a number keeps the loop going, anything else leaves it, and `n` is a plain `int` after that line either way.
+- `println#` takes a braced group, so mixing strings and ints in one call is fine.
+
+type `1`, `2`, `3`, then `lol`, and it prints the running total after each number, then the final one.
 
 ## where to go from here
 
-that's the tour so far: six primitives, arrays, structs, nullables, a loop, modules, and a handful of built-ins. it's all still a work in progress, so expect it to grow. every piece uses the colon-then-braces shape from the very first function.
+that's the whole language as it stands today. if you want something to keep open while you write code, the cheatsheet has everything above in a denser form. the full tour is in the repo at `docs/tour.md`, and the source is [on codeberg](https://git.caelondev.net/repos/iglot) if you want to see how any of this is built.
 
-go write something. if the compiler yells at you, it's probably right.
+things that are coming:
 
-> (P.S. i'll try to keep updating this post everytime theres a new iglot update :3)
+- more loops, so you stop building counters out of `loop` and `break`
+- visibility modifiers, since everything at the top level is importable right now
+- using another module's struct as a type (`math.Vec`)
+
+if you hit a bug or something in the compiler errors confuses you, open an issue. the language is small enough that i'd rather fix a rough edge than document around it.
+
+thanks for reading, and have fun breaking it.
+
+(P.S. i'll try to keep updating this post everytime theres a new iglot update :3)
